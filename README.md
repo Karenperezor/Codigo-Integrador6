@@ -2,20 +2,6 @@
 
 IoT Implementation for Women’s Safety
 
-## Descripción del Proyecto
-
-La seguridad personal, especialmente en el caso de las mujeres, se ha convertido en una problemática social relevante. En muchos casos, las víctimas no cuentan con herramientas inmediatas para solicitar ayuda. Este proyecto propone el desarrollo de un prototipo basado en Internet de las Cosas (IoT) capaz de detectar y transmitir información relevante durante una situación de riesgo, utilizando sensores biométricos, geolocalización y comunicación inalámbrica de largo alcance (LoRa).
-
-
-## Objetivo
-Desarrollar un prototipo IoT de seguridad personal que permita enviar alertas de emergencia con geolocalización GPS y datos biométricos en tiempo real, utilizando tecnología inalámbrica LoRa, con el fin de mejorar la respuesta ante situaciones de riesgo y reducir la revictimización mediante la generación de evidencia digital.
-
-## Problema Identificado
-La inseguridad y vulnerabilidad en situaciones de riesgo derivada de la falta de mecanismos de alerta inmediata y monitoreo en tiempo real que permitan solicitar ayuda de forma rápida y generar evidencia digital confiable.
-
-## Justificación
-A diferencia de las aplicaciones móviles tradicionales que dependen de la batería y señal celular, este dispositivo IoT portátil funciona de manera independiente y puede transmitir información en escenarios donde la conectividad tradicional es limitada, generando datos objetivos (ubicación, signos vitales, movimiento) que sirven como evidencia.
-
 ## Arquitectura del Sistema
 El sistema se basa en una arquitectura IoT compuesta por:
 
