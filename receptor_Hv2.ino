@@ -1,11 +1,16 @@
 /**
- * Receptor LoRa V2
+ * Receptor LoRa - FINAL
+ * ESP32 + SX1276 + OLED SSD1306
+ * Con ESP-NOW → LilyGO Gateway
+ * Con detección de señal perdida
  */
 
 #include <RadioLib.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <esp_now.h>
+#include <WiFi.h>
 
 /* ================================================================
  *  CONFIGURACIÓN HARDWARE
@@ -25,6 +30,9 @@ SX1276 radio = new Module(18, 26, 14, 35);
 
 byte dirLocal   = 0xD3;
 byte dirPulsera = 0xC1;
+
+// MAC del Gateway LilyGO
+uint8_t macGateway[] = {0x80, 0x64, 0x6F, 0xFC, 0x0A, 0x50};
 
 /* ================================================================
  *  ESTRUCTURA DE DATOS
@@ -56,8 +64,13 @@ bool hayDato        = false;
 int pantActual = 0;
 #define N_PANTALLAS 4
 bool btnPresionado = false;
-unsigned long tBtn = 0;
+unsigned long tBtn   = 0;
 unsigned long tBlink = 0;
+
+// --- DETECCIÓN PÉRDIDA DE SEÑAL ---
+unsigned long ultimoTiempoRX = 0;
+const long    TIMEOUT_SENAL  = 15000;
+bool          senalPerdida   = false;
 
 /* ================================================================
  *  ICONOS XBM
@@ -112,12 +125,12 @@ bool parsearJSON(const String &raw, Evidencia &ev) {
     return j < 0 ? "" : raw.substring(i, j);
   };
 
-  ev.lat    = extraerNum("Lat").toDouble();
-  ev.lon    = extraerNum("Lon").toDouble();
-  ev.bpm    = extraerNum("BPM").toInt();
-  ev.spo2   = extraerNum("SpO2").toInt();
-  ev.acel   = extraerNum("Mag").toFloat();
-  
+  ev.lat  = extraerNum("Lat").toDouble();
+  ev.lon  = extraerNum("Lon").toDouble();
+  ev.bpm  = extraerNum("BPM").toInt();
+  ev.spo2 = extraerNum("SpO2").toInt();
+  ev.acel = extraerNum("Mag").toFloat();
+
   String f = extraerStr("Fecha");
   String h = extraerStr("Hora");
   if (f.length() > 0 && h.length() > 0) ev.ts = f + "T" + h;
@@ -126,8 +139,8 @@ bool parsearJSON(const String &raw, Evidencia &ev) {
   int sos = extraerNum("SOS").toInt();
   ev.tipo = (sos == 1) ? "PANICO" : "NORMAL";
 
-  ev.fix = (ev.lat != 0.0 || ev.lon != 0.0);
-  ev.sats = ev.fix ? 8 : 0; 
+  ev.fix  = (ev.lat != 0.0 || ev.lon != 0.0);
+  ev.sats = ev.fix ? 8 : 0;
 
   ev.valid = true;
   return true;
@@ -170,17 +183,64 @@ void pantEspera() {
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
-  display.setCursor(20, 5); 
+  display.setCursor(20, 5);
   display.print("INSTITUTO MUJER");
   display.drawLine(0, 15, 128, 15, SSD1306_WHITE);
   display.setTextSize(2);
-  display.setCursor(20, 25); 
+  display.setCursor(20, 25);
   display.print("ESPERA...");
   display.setTextSize(1);
-  display.setCursor(0, 50); 
+  display.setCursor(0, 50);
   display.print("915MHz SF8");
   if (millis() % 2000 < 1000) display.fillCircle(120, 55, 3, SSD1306_WHITE);
   else                        display.drawCircle(120, 55, 3, SSD1306_WHITE);
+  display.display();
+}
+
+void pantSignalLost() {
+  display.clearDisplay();
+
+  // Header parpadeante
+  bool blinking = (millis() % 800 < 400);
+  if (blinking) {
+    display.fillRect(0, 0, 128, 13, SSD1306_WHITE);
+    display.setTextColor(SSD1306_BLACK);
+  } else {
+    display.setTextColor(SSD1306_WHITE);
+    display.drawRect(0, 0, 128, 13, SSD1306_WHITE);
+  }
+  display.setTextSize(1);
+  display.setCursor(16, 3);
+  display.print("! SENAL PERDIDA !");
+  display.setTextColor(SSD1306_WHITE);
+  display.drawLine(0, 13, 128, 13, SSD1306_WHITE);
+
+  // Cuerpo
+  display.setCursor(6, 18);
+  display.print("Sin datos de pulsera");
+
+  // Tiempo transcurrido
+  unsigned long segs = (millis() - ultimoTiempoRX) / 1000;
+  unsigned long mins = segs / 60;
+  unsigned long secs = segs % 60;
+  display.setCursor(6, 30);
+  display.print("Hace: ");
+  if (mins > 0) {
+    display.print(mins); display.print("m ");
+    display.print(secs); display.print("s");
+  } else {
+    display.print(secs); display.print("s");
+  }
+
+  // Último paquete recibido
+  display.setCursor(6, 42);
+  display.print("Ult paquete: #");
+  display.print(ultimo.numero);
+
+  // Estado radio
+  display.setCursor(6, 54);
+  display.print("915MHz SF8 | OK");
+
   display.display();
 }
 
@@ -189,12 +249,11 @@ void pant_alerta() {
 
   display.clearDisplay();
 
-  // Header
   if (esAlerta) {
     static bool inv = false;
     static unsigned long tI = 0;
     if (millis() - tI > 400) { inv = !inv; tI = millis(); }
-    
+
     if (inv) {
       display.fillRect(0, 0, 128, 12, SSD1306_WHITE);
       display.setTextColor(SSD1306_BLACK);
@@ -208,39 +267,29 @@ void pant_alerta() {
   } else {
     drawHdr("DATOS RECIBIDOS");
   }
-  
+
   display.setTextSize(1);
 
-  // --- FILA 1 (Y=15): SIGNOS VITALES ---
   display.drawXBitmap(0, 15, HEART_BITS, 12, 12, SSD1306_WHITE);
   display.setCursor(14, 16); display.print(String(ultimo.bpm) + " BPM");
 
   display.drawXBitmap(64, 15, DROP_BITS, 8, 12, SSD1306_WHITE);
   display.setCursor(76, 16); display.print(String(ultimo.spo2) + "%");
 
-  // --- FILA 2 (Y=28): MOVIMIENTO Y SEÑAL ---
   display.drawXBitmap(0, 28, WAVE_BITS, 10, 8, SSD1306_WHITE);
   display.setCursor(14, 29); display.print("G:" + String(ultimo.acel, 2));
 
   display.drawXBitmap(75, 28, SIGNAL_BITS, 10, 10, SSD1306_WHITE);
   display.setCursor(87, 29); display.print(String((int)ultimo.rssi) + "dB");
 
-  // --- FILA 3 (Y=41): LATITUD ---
   display.drawXBitmap(0, 41, PIN_BITS, 8, 12, SSD1306_WHITE);
   display.setCursor(12, 42);
-  if (ultimo.fix) {
-    display.print("Lat:" + String(ultimo.lat, 5));
-  } else {
-    display.print("Lat: --");
-  }
+  if (ultimo.fix) display.print("Lat:" + String(ultimo.lat, 5));
+  else            display.print("Lat: --");
 
-  // --- FILA 4 (Y=54): LONGITUD ---
   display.setCursor(12, 54);
-  if (ultimo.fix) {
-    display.print("Lon:" + String(ultimo.lon, 5));
-  } else {
-    display.print("Lon: --");
-  }
+  if (ultimo.fix) display.print("Lon:" + String(ultimo.lon, 5));
+  else            display.print("Lon: --");
 
   drawDots();
   display.display();
@@ -254,7 +303,7 @@ void pant_gps() {
   display.drawXBitmap(0, 16, PIN_BITS, 8, 12, SSD1306_WHITE);
   display.setCursor(12, 16);
   display.print("Sats: " + String(ultimo.sats));
-  
+
   int bw = (ultimo.sats > 12) ? 110 : (ultimo.sats * 110) / 12;
   display.drawRect(0, 28, 128, 6, SSD1306_WHITE);
   if (bw > 0) display.fillRect(1, 29, bw, 4, SSD1306_WHITE);
@@ -283,7 +332,6 @@ void pant_stats() {
 
   display.setCursor(0, 16); display.print("Recibidos: " + String(totalRecibidos));
   display.setCursor(0, 28); display.print("Perdidos : " + String(totalCorruptos));
-  
   display.setCursor(0, 42); display.print("Tasa Exito: " + String(pct) + "%");
   drawBarra(0, 54, 128, 8, pct);
 
@@ -299,11 +347,9 @@ void pant_historial() {
   int count = min(totalRecibidos, HIST_SIZE);
   for (int i = 0; i < count; i++) {
     int idx = (totalRecibidos - 1 - i + HIST_SIZE) % HIST_SIZE;
-    
     String lin = "#" + String(historial[idx].numero) + " " +
                  historial[idx].tipo + " " +
                  String(historial[idx].acel, 1) + "g";
-
     display.setCursor(0, 14 + i * 10);
     display.print(lin);
   }
@@ -316,11 +362,12 @@ void pant_historial() {
 }
 
 void dibujarPantalla() {
-  if (totalRecibidos == 0) { pantEspera(); return; }
+  if (totalRecibidos == 0) { pantEspera();     return; }
+  if (senalPerdida)        { pantSignalLost(); return; }
   switch (pantActual) {
-    case 0: pant_alerta(); break;
-    case 1: pant_gps();    break;
-    case 2: pant_stats();  break;
+    case 0: pant_alerta();    break;
+    case 1: pant_gps();       break;
+    case 2: pant_stats();     break;
     case 3: pant_historial(); break;
   }
 }
@@ -346,13 +393,11 @@ void recibirLoRa() {
 
   int len = radio.getPacketLength();
   if (len < 4) return;
-
-  if (buf[0] != dirLocal) return;
+  if (buf[0] != dirLocal)   return;
   if (buf[1] != dirPulsera) return;
 
-  int idPaquete = buf[2];
-  
-  byte payLen = buf[3];
+  int  idPaquete = buf[2];
+  byte payLen    = buf[3];
   if (len < (int)(4 + payLen)) return;
 
   String payload = "";
@@ -362,8 +407,8 @@ void recibirLoRa() {
   Serial.print(F("RX: ")); Serial.println(payload);
 
   Evidencia ev;
-  ev.rssi = radio.getRSSI();
-  ev.snr  = radio.getSNR();
+  ev.rssi   = radio.getRSSI();
+  ev.snr    = radio.getSNR();
   ev.numero = idPaquete;
 
   if (!parsearJSON(payload, ev)) {
@@ -375,19 +420,30 @@ void recibirLoRa() {
   ultimo = ev;
   totalRecibidos++;
   hayDato = true;
+
+  // Actualizar estado de señal
+  ultimoTiempoRX = millis();
+  senalPerdida   = false;
+
   historial[(totalRecibidos - 1) % HIST_SIZE] = ev;
+
+  // Reenviar al Gateway por ESP-NOW
+  esp_now_send(macGateway, (uint8_t*)payload.c_str(), payload.length());
 
   Serial.printf("OK #%d [%s] G:%.2f BPM:%d SpO2:%d\n",
     ev.numero, ev.tipo.c_str(), ev.acel, ev.bpm, ev.spo2);
 
   bool alerta = (ev.tipo == "PANICO" || ev.tipo == "CAIDA");
-  int blinks = alerta ? 5 : 2;
+  int blinks  = alerta ? 5 : 2;
   for (int k = 0; k < blinks; k++) {
     digitalWrite(LED_PIN, HIGH); delay(alerta ? 120 : 50);
     digitalWrite(LED_PIN, LOW);  delay(50);
   }
 }
 
+/* ================================================================
+ *  SETUP
+ * ================================================================ */
 void setup() {
   Serial.begin(115200);
   delay(500);
@@ -405,19 +461,18 @@ void setup() {
     Serial.println(F("OLED ERROR"));
     while (true) delay(1000);
   }
-  
+
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
-
-  display.setCursor(30, 20); display.print("INICIANDO");
+  display.setCursor(30, 20); display.print("INICIANDO...");
   display.display();
   delay(1000);
 
+  // LoRa
   SPI.begin(5, 19, 27, 18);
   Serial.print(F("LoRa SX1276 915MHz... "));
   int st = radio.begin(FREQUENCY, BANDWIDTH, SPREAD_FACTOR, CODING_RATE);
-
   if (st == RADIOLIB_ERR_NONE) {
     radio.setCRC(true);
     Serial.println(F("OK"));
@@ -430,23 +485,52 @@ void setup() {
     while (true) delay(1000);
   }
 
+  // ESP-NOW
+  WiFi.mode(WIFI_STA);
+  if (esp_now_init() == ESP_OK) {
+    esp_now_peer_info_t peer = {};
+    memcpy(peer.peer_addr, macGateway, 6);
+    peer.channel = 0;
+    peer.encrypt = false;
+    esp_now_add_peer(&peer);
+    Serial.println(F("ESP-NOW listo"));
+  } else {
+    Serial.println(F("ESP-NOW ERROR"));
+  }
+
   Serial.println(F("Escuchando..."));
   display.clearDisplay();
 }
 
+/* ================================================================
+ *  LOOP
+ * ================================================================ */
 void loop() {
   leerBoton();
   recibirLoRa();
 
+  // Detectar pérdida de señal
+  if (totalRecibidos > 0) {
+    if (millis() - ultimoTiempoRX > TIMEOUT_SENAL) {
+      if (!senalPerdida) {
+        senalPerdida = true;
+        hayDato      = true;
+        Serial.println(F("ALERTA: Senal perdida (Timeout)"));
+      }
+    }
+  }
+
+  // Refrescar pantalla
   static unsigned long tRef = 0;
   if (hayDato || millis() - tRef > 500) {
-    tRef = millis();
+    tRef    = millis();
     hayDato = false;
     dibujarPantalla();
   }
-  
-  if(totalRecibidos == 0) {
-    if(millis() - tBlink > 2000) {
+
+  // LED latido cuando no hay datos
+  if (totalRecibidos == 0) {
+    if (millis() - tBlink > 2000) {
       tBlink = millis();
       digitalWrite(LED_PIN, HIGH); delay(10);
       digitalWrite(LED_PIN, LOW);
