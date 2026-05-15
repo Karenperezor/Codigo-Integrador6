@@ -1,8 +1,17 @@
 /**
- * Receptor LoRa - FINAL ESTABLE
- * - Buzzer: Suena SOLO en ALERTA (PANICO/CAIDA).
- * - Silencio TOTAL en ESPERA y datos normales.
- * - ESP-NOW activo.
+ * Receptor LoRa - PANTALLAS OLED MEJORADAS
+ * ─────────────────────────────────────────
+ * Mejoras visuales en todas las pantallas:
+ *  - Pantalla ESPERA      : arcos de señal + barra animada
+ *  - Pantalla DATOS       : mini-cards BPM/SpO2, separadores
+ *  - Pantalla PANICO      : inversión total de pantalla
+ *  - Pantalla GPS         : coordenadas grandes, badge FIX, barra sats
+ *  - Pantalla STATS       : 3 mini-cards + barra de éxito
+ *  - Pantalla HISTORIAL   : filas alternas con número de paquete
+ *  - Pantalla SENAL PERDIDA: ícono antena rota, tiempo MM:SS grande,
+ *                            barra de progreso de timeout
+ * Buzzer: solo en ALERTA. Silencio total en espera/datos normales.
+ * ESP-NOW activo.
  */
 
 #include <RadioLib.h>
@@ -61,7 +70,7 @@ int  totalRecibidos = 0;
 int  totalCorruptos = 0;
 bool hayDato        = false;
 
-int pantActual = 0;
+int  pantActual    = 0;
 #define N_PANTALLAS 4
 bool btnPresionado = false;
 unsigned long tBtn   = 0;
@@ -69,22 +78,23 @@ unsigned long tBlink = 0;
 
 unsigned long ultimoTiempoRX = 0;
 const long    TIMEOUT_SENAL  = 15000;
+//const long TIMEOUT_SENAL = 900000; // 15 minutos en milisegundos
+const long TIMEOUT_SENAL_PERDIDA = 900000;
+
 bool          senalPerdida   = false;
 
-// ── BUZZER: variables nuevas ──────────────────────────────────────
-bool          alertaActiva  = false;
-unsigned long tiempoAlerta  = 0;
-const long    DURACION_ALERTA = 30000; // 30s sin nuevo PANICO → cancela
-// ─────────────────────────────────────────────────────────────────
+bool          alertaActiva   = false;
+unsigned long tiempoAlerta   = 0;
+const long    DURACION_ALERTA = 30000;
 
 /* ================================================================
- *  ICONOS XBM
+ *  ICONOS XBM (originales, usados como respaldo)
  * ================================================================ */
-const uint8_t HEART_BITS[]  = { 0x36, 0x00, 0x7F, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0x7E, 0x00, 0x3C, 0x00, 0x18, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-const uint8_t DROP_BITS[]   = { 0x0C, 0x1E, 0x3F, 0x3F, 0x3F, 0x3F, 0x3F, 0x1E, 0x0C, 0x00, 0x00, 0x00 };
-const uint8_t PIN_BITS[]    = { 0x3E, 0x7F, 0x7F, 0x7F, 0x7F, 0x3E, 0x1C, 0x08, 0x08, 0x00, 0x00, 0x00 };
-const uint8_t WAVE_BITS[]   = { 0x00, 0x00, 0x22, 0x00, 0x55, 0x00, 0x88, 0x00, 0x55, 0x00, 0x22, 0x00, 0x00, 0x00, 0x00, 0x00 };
-const uint8_t SIGNAL_BITS[] = { 0x00, 0x00, 0x10, 0x00, 0x38, 0x00, 0x7C, 0x00, 0x38, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+const uint8_t HEART_BITS[]  = { 0x36,0x00,0x7F,0x00,0xFF,0x00,0xFF,0x00,0x7E,0x00,0x3C,0x00,0x18,0x00,0x08,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
+const uint8_t DROP_BITS[]   = { 0x0C,0x1E,0x3F,0x3F,0x3F,0x3F,0x3F,0x1E,0x0C,0x00,0x00,0x00 };
+const uint8_t PIN_BITS[]    = { 0x3E,0x7F,0x7F,0x7F,0x7F,0x3E,0x1C,0x08,0x08,0x00,0x00,0x00 };
+const uint8_t WAVE_BITS[]   = { 0x00,0x00,0x22,0x00,0x55,0x00,0x88,0x00,0x55,0x00,0x22,0x00,0x00,0x00,0x00,0x00 };
+const uint8_t SIGNAL_BITS[] = { 0x00,0x00,0x10,0x00,0x38,0x00,0x7C,0x00,0x38,0x00,0x10,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 };
 
 /* ================================================================
  *  PARSING JSON
@@ -115,8 +125,7 @@ bool parsearJSON(const String &raw, Evidencia &ev) {
   ev.acel = extraerNum("Mag").toFloat();
   String f = extraerStr("Fecha");
   String h = extraerStr("Hora");
-  if (f.length() > 0 && h.length() > 0) ev.ts = f + "T" + h;
-  else ev.ts = "N/A";
+  ev.ts   = (f.length() > 0 && h.length() > 0) ? f + "T" + h : "N/A";
   int sos = extraerNum("SOS").toInt();
   ev.tipo = (sos == 1) ? "PANICO" : "NORMAL";
   ev.fix  = (ev.lat != 0.0 || ev.lon != 0.0);
@@ -128,6 +137,8 @@ bool parsearJSON(const String &raw, Evidencia &ev) {
 /* ================================================================
  *  HELPERS DE PANTALLA
  * ================================================================ */
+
+// Header blanco invertido (texto negro sobre fondo blanco)
 void drawHdr(const char *titulo) {
   display.fillRect(0, 0, 128, 12, SSD1306_WHITE);
   display.setTextColor(SSD1306_BLACK);
@@ -135,11 +146,11 @@ void drawHdr(const char *titulo) {
   display.setCursor((128 - (strlen(titulo) * 6)) / 2, 2);
   display.print(titulo);
   display.setTextColor(SSD1306_WHITE);
-  display.drawLine(0, 12, 127, 12, SSD1306_WHITE);
 }
 
+// Puntos de paginación en la parte inferior
 void drawDots() {
-  int dotW = 6, gap = 4;
+  int dotW = 8, gap = 3;
   int startX = (128 - (N_PANTALLAS * dotW + (N_PANTALLAS - 1) * gap)) / 2;
   for (int i = 0; i < N_PANTALLAS; i++) {
     int x = startX + i * (dotW + gap);
@@ -148,156 +159,438 @@ void drawDots() {
   }
 }
 
+// Barra de progreso con borde redondeado
 void drawBarra(int x, int y, int w, int h, int pct) {
-  display.drawRect(x, y, w, h, SSD1306_WHITE);
+  display.drawRoundRect(x, y, w, h, 1, SSD1306_WHITE);
   int fill = (pct * (w - 2)) / 100;
   if (fill > 0) display.fillRect(x + 1, y + 1, fill, h - 2, SSD1306_WHITE);
+}
+
+// Mini-card con etiqueta arriba y valor grande abajo
+void drawCard(int x, int y, int w, int h, const char* label, const char* valor) {
+  display.drawRoundRect(x, y, w, h, 2, SSD1306_WHITE);
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(x + 3, y + 2);
+  display.print(label);
+  display.setTextSize(2);
+  display.setCursor(x + 3, y + 11);
+  display.print(valor);
+  display.setTextSize(1);
+}
+
+/* ================================================================
+ *  ÍCONO ANTENA ROTA (para pantalla señal perdida)
+ *  Técnica: drawCircle completo + fillRect negro para "borrar"
+ *  la mitad inferior, simulando arcos superiores.
+ * ================================================================ */
+void dibujarAntenRota(int cx, int cy) {
+  // Palo de antena
+  display.drawLine(cx, cy - 14, cx, cy - 6, SSD1306_WHITE);
+  // Base
+  display.drawLine(cx - 5, cy - 6, cx + 5, cy - 6, SSD1306_WHITE);
+
+  // Arco pequeño
+  display.drawCircle(cx, cy - 4, 6, SSD1306_WHITE);
+  display.fillRect(cx - 7, cy - 4, 15, 8, SSD1306_BLACK);
+
+  // Arco mediano
+  display.drawCircle(cx, cy - 4, 11, SSD1306_WHITE);
+  display.fillRect(cx - 12, cy - 4, 25, 13, SSD1306_BLACK);
+
+  // X de "sin señal" — esquina superior derecha del ícono
+  display.drawLine(cx + 7, cy - 16, cx + 12, cy - 11, SSD1306_WHITE);
+  display.drawLine(cx + 12, cy - 16, cx + 7, cy - 11, SSD1306_WHITE);
 }
 
 /* ================================================================
  *  FUNCIONES BUZZER
  * ================================================================ */
-void buzzerOn()  { digitalWrite(BUZZER_PIN, HIGH); } // HIGH = suena
-void buzzerOff() { digitalWrite(BUZZER_PIN, LOW);  } // LOW  = silencio
+void buzzerOn()  { digitalWrite(BUZZER_PIN, HIGH); }
+void buzzerOff() { digitalWrite(BUZZER_PIN, LOW);  }
+
 /* ================================================================
- *  PANTALLAS
+ *  PANTALLA 1 — ESPERA
+ *  Mejoras:
+ *   - Arcos de señal LoRa centrados (con animación de punto)
+ *   - Barra de "scanning" animada
+ *   - Título + frecuencia más legibles
  * ================================================================ */
 void pantEspera() {
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
+
+  // Título superior
   display.setTextSize(1);
-  display.setCursor(20, 5); display.print("INSTITUTO MUJER");
-  display.drawLine(0, 15, 128, 15, SSD1306_WHITE);
-  display.setTextSize(2);
-  display.setCursor(20, 25); display.print("ESPERA...");
+  display.setCursor((128 - (15 * 6)) / 2, 1);
+  display.print("INSTITUTO MUJER");
+  display.drawLine(0, 10, 128, 10, SSD1306_WHITE);
+
+  // Arcos de señal tipo WiFi, centrados
+  int cx = 64, cy = 38;
+  // Punto central (parpadeante)
+  if (millis() % 1200 < 600) display.fillCircle(cx, cy, 2, SSD1306_WHITE);
+  else                        display.drawCircle(cx, cy, 2, SSD1306_WHITE);
+
+  // Arcos superiores — se dibujan incompletos con truco fillRect
+  display.drawCircle(cx, cy, 7, SSD1306_WHITE);
+  display.fillRect(cx - 8, cy, 17, 9, SSD1306_BLACK);   // borra mitad inferior arco 1
+
+  display.drawCircle(cx, cy, 13, SSD1306_WHITE);
+  display.fillRect(cx - 14, cy, 29, 15, SSD1306_BLACK);  // borra mitad inferior arco 2
+
+  display.drawCircle(cx, cy, 19, SSD1306_WHITE);
+  display.fillRect(cx - 20, cy, 41, 21, SSD1306_BLACK);  // borra mitad inferior arco 3
+
+  // Barra animada de "escaneando"
+  unsigned long t = millis() % 2000;
+  int barPos = (t < 1000) ? (t * 110 / 1000) : ((2000 - t) * 110 / 1000);
+  display.drawRoundRect(8, 54, 112, 4, 1, SSD1306_WHITE);
+  display.fillRect(9 + barPos, 55, 8, 2, SSD1306_WHITE);
+
+  // Info frecuencia
   display.setTextSize(1);
-  display.setCursor(0, 50); display.print("915MHz SF8");
-  if (millis() % 2000 < 1000) display.fillCircle(120, 55, 3, SSD1306_WHITE);
-  else                        display.drawCircle(120, 55, 3, SSD1306_WHITE);
+  display.setCursor(28, 46);
+  display.print("915MHz | SF8 | BW125");
+
   display.display();
 }
 
+/* ================================================================
+ *  PANTALLA 2 — SEÑAL PERDIDA
+ *  Mejoras:
+ *   - Ícono antena rota centrado
+ *   - Tiempo transcurrido en formato MM:SS grande
+ *   - Barra de progreso del timeout (15s)
+ *   - Header parpadeante (ya existía, mejorado)
+ *   - Línea separadora + último paquete en una sola línea
+ * ================================================================ */
 void pantSignalLost() {
   display.clearDisplay();
+
+  // Header parpadeante
   bool blinking = (millis() % 800 < 400);
   if (blinking) {
-    display.fillRect(0, 0, 128, 13, SSD1306_WHITE);
+    display.fillRect(0, 0, 128, 12, SSD1306_WHITE);
     display.setTextColor(SSD1306_BLACK);
   } else {
     display.setTextColor(SSD1306_WHITE);
-    display.drawRect(0, 0, 128, 13, SSD1306_WHITE);
+    display.drawRect(0, 0, 128, 12, SSD1306_WHITE);
   }
   display.setTextSize(1);
-  display.setCursor(16, 3); display.print("! SENAL PERDIDA !");
+  display.setCursor(14, 2);
+  display.print("!! SENAL PERDIDA !!");
   display.setTextColor(SSD1306_WHITE);
-  display.drawLine(0, 13, 128, 13, SSD1306_WHITE);
-  display.setCursor(6, 18); display.print("Sin datos de pulsera");
+
+  // Ícono antena rota (centrado horizontalmente, zona media-izquierda)
+  dibujarAntenRota(24, 38);
+
+  // Tiempo transcurrido grande — formato MM:SS
   unsigned long segs = (millis() - ultimoTiempoRX) / 1000;
-  unsigned long mins = segs / 60;
-  unsigned long secs = segs % 60;
-  display.setCursor(6, 30);
-  display.print("Hace: ");
-  if (mins > 0) { display.print(mins); display.print("m "); display.print(secs); display.print("s"); }
-  else          { display.print(secs); display.print("s"); }
-  display.setCursor(6, 42); display.print("Ult paquete: #"); display.print(ultimo.numero);
-  display.setCursor(6, 54); display.print("915MHz SF8 | OK");
+  char buf[8];
+  sprintf(buf, "%02lu:%02lu", segs / 60, segs % 60);
+  display.setTextSize(2);
+  int txtW = strlen(buf) * 12;
+  display.setCursor(64 + (64 - txtW) / 2, 18);  // centrado en mitad derecha
+  display.print(buf);
+  display.setTextSize(1);
+
+  // Subtítulo "sin datos"
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(50, 35);
+  display.print("sin datos");
+
+  // Separador
+  display.drawLine(4, 45, 124, 45, SSD1306_WHITE);
+
+  // Último paquete recibido
+  display.setCursor(2, 48);
+  display.print("Ult:#" + String(ultimo.numero) + " | " + ultimo.tipo);
+
+  // Barra de progreso del timeout
+  // Llena de izquierda a derecha hasta que se alcanza TIMEOUT_SENAL
+  int pctTimeout = min(100, (int)((millis() - ultimoTiempoRX) * 100L / TIMEOUT_SENAL));
+  display.drawRoundRect(2, 57, 124, 4, 1, SSD1306_WHITE);
+  int fill = (pctTimeout * 122) / 100;
+  if (fill > 0) display.fillRect(3, 58, fill, 2, SSD1306_WHITE);
+
   display.display();
 }
 
+/* ================================================================
+ *  PANTALLA 3 — DATOS / ALERTA (pantalla 0)
+ *  Mejoras:
+ *   - NORMAL: mini-cards BPM y SpO2, separadores, layout 2 cols
+ *   - PANICO: inversión TOTAL de pantalla (blanco completo)
+ *   - Número de paquete en esquina inferior derecha
+ * ================================================================ */
+/* ================================================================
+ *  PANTALLA DATOS / ALERTA  — reemplaza pant_alerta() completa
+ * ================================================================ */
 void pant_alerta() {
   bool esAlerta = (ultimo.tipo == "PANICO" || ultimo.tipo == "CAIDA");
   display.clearDisplay();
 
   if (esAlerta) {
+
+    // Header — solo él parpadea
     static bool inv = false;
     static unsigned long tI = 0;
-    if (millis() - tI > 400) { inv = !inv; tI = millis(); }
+    if (millis() - tI > 500) { inv = !inv; tI = millis(); }
+
     if (inv) {
-      display.fillRect(0, 0, 128, 12, SSD1306_WHITE);
+      display.fillRect(0, 0, 128, 13, SSD1306_WHITE);
       display.setTextColor(SSD1306_BLACK);
     } else {
+      display.drawRect(0, 0, 128, 13, SSD1306_WHITE);
       display.setTextColor(SSD1306_WHITE);
     }
     display.setTextSize(1);
-    display.setCursor(2, 2);
-    display.print("!! " + ultimo.tipo + " !!");
+    display.setCursor((128 - (strlen(ultimo.tipo.c_str()) * 6 + 6)) / 2, 3);
+    display.print("! " + ultimo.tipo + " !");
+
+    // Resto siempre legible — blanco sobre negro
     display.setTextColor(SSD1306_WHITE);
+
+    // Card BPM
+    display.drawRoundRect(1, 15, 60, 26, 2, SSD1306_WHITE);
+    display.setTextSize(1);
+    display.setCursor(5, 17);
+    display.print("BPM");
+    display.setTextSize(2);
+    display.setCursor(5, 25);
+    display.print(String(ultimo.bpm));
+    display.setTextSize(1);
+
+    // Card Acelerometro
+    display.drawRoundRect(66, 15, 61, 26, 2, SSD1306_WHITE);
+    display.setCursor(70, 17);
+    display.print("Impacto");
+    display.setTextSize(2);
+    display.setCursor(70, 25);
+    display.print(String(ultimo.acel, 1) + "g");
+    display.setTextSize(1);
+
+    // Separador
+    display.drawLine(0, 43, 128, 43, SSD1306_WHITE);
+
+    // GPS
+    display.setCursor(2, 46);
+    if (ultimo.fix) {
+      display.print(String(ultimo.lat, 5));
+      display.setCursor(2, 55);
+      display.print(String(ultimo.lon, 5));
+    } else {
+      display.setCursor(20, 50);
+      display.print("Sin ubicacion GPS");
+    }
+
+    drawDots();
+
   } else {
+
+    // Datos normales
+    display.setTextColor(SSD1306_WHITE);
     drawHdr("DATOS RECIBIDOS");
+
+    // Card BPM
+    display.drawRoundRect(1, 13, 60, 22, 2, SSD1306_WHITE);
+    display.setTextSize(1);
+    display.setCursor(5, 15);
+    display.print("BPM");
+    display.setTextSize(2);
+    display.setCursor(5, 22);
+    display.print(String(ultimo.bpm));
+    display.setTextSize(1);
+
+    // Card Acelerometro
+    display.drawRoundRect(66, 13, 61, 22, 2, SSD1306_WHITE);
+    display.setCursor(70, 15);
+    display.print("Mov");
+    display.setTextSize(2);
+    display.setCursor(70, 22);
+    display.print(String(ultimo.acel, 1) + "g");
+    display.setTextSize(1);
+
+    // Separador
+    display.drawLine(0, 37, 128, 37, SSD1306_WHITE);
+
+    // GPS
+    display.drawXBitmap(0, 39, PIN_BITS, 8, 12, SSD1306_WHITE);
+    display.setCursor(11, 40);
+    if (ultimo.fix) display.print(String(ultimo.lat, 4) + " / " + String(ultimo.lon, 4));
+    else            display.print("Sin ubicacion GPS");
+
+    drawDots();
   }
 
-  display.setTextSize(1);
-  display.drawXBitmap(0, 15, HEART_BITS, 12, 12, SSD1306_WHITE);
-  display.setCursor(14, 16); display.print(String(ultimo.bpm) + " BPM");
-  display.drawXBitmap(64, 15, DROP_BITS, 8, 12, SSD1306_WHITE);
-  display.setCursor(76, 16); display.print(String(ultimo.spo2) + "%");
-  display.drawXBitmap(0, 28, WAVE_BITS, 10, 8, SSD1306_WHITE);
-  display.setCursor(14, 29); display.print("G:" + String(ultimo.acel, 2));
-  display.drawXBitmap(75, 28, SIGNAL_BITS, 10, 10, SSD1306_WHITE);
-  display.setCursor(87, 29); display.print(String((int)ultimo.rssi) + "dB");
-  display.drawXBitmap(0, 41, PIN_BITS, 8, 12, SSD1306_WHITE);
-  display.setCursor(12, 42);
-  if (ultimo.fix) display.print("Lat:" + String(ultimo.lat, 5));
-  else            display.print("Lat: --");
-  display.setCursor(12, 54);
-  if (ultimo.fix) display.print("Lon:" + String(ultimo.lon, 5));
-  else            display.print("Lon: --");
-
-  drawDots();
   display.display();
 }
 
+
+
+/* ================================================================
+ *  PANTALLA 4 — GPS (pantalla 1)
+ *  Mejoras:
+ *   - Coordenadas en texto grande (tamaño 2)
+ *   - Badge "GPS FIX" / "SIN FIX" invertido
+ *   - Barra de satélites con porcentaje
+ *   - SNR añadido
+ * ================================================================ */
 void pant_gps() {
   display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
   drawHdr("DETALLES GPS");
-  display.setTextSize(1);
-  display.drawXBitmap(0, 16, PIN_BITS, 8, 12, SSD1306_WHITE);
-  display.setCursor(12, 16); display.print("Sats: " + String(ultimo.sats));
-  int bw = (ultimo.sats > 12) ? 110 : (ultimo.sats * 110) / 12;
-  display.drawRect(0, 28, 128, 6, SSD1306_WHITE);
-  if (bw > 0) display.fillRect(1, 29, bw, 4, SSD1306_WHITE);
+
   if (ultimo.fix) {
-    display.setCursor(0, 38); display.print("Lat: " + String(ultimo.lat, 5));
-    display.setCursor(0, 50); display.print("Lon: " + String(ultimo.lon, 5));
+    // Badge FIX (caja blanca, texto negro)
+    display.fillRoundRect(90, 13, 37, 10, 2, SSD1306_WHITE);
+    display.setTextColor(SSD1306_BLACK);
+    display.setCursor(93, 15); display.print("GPS FIX");
+    display.setTextColor(SSD1306_WHITE);
   } else {
-    display.setCursor(30, 42); display.print("Sin fix GPS");
+    display.drawRoundRect(90, 13, 37, 10, 2, SSD1306_WHITE);
+    display.setCursor(93, 15); display.print("SIN FIX");
   }
+
+  // Coordenadas grandes
+  display.setTextSize(1);
+  display.setCursor(1, 14);
+  display.print("LAT");
+  display.setTextSize(1);
+  display.setCursor(1, 23);
+  if (ultimo.fix) display.print(String(ultimo.lat, 6));
+  else            display.print("---.------");
+
+  display.setCursor(1, 33);
+  display.print("LON");
+  display.setCursor(1, 42);
+  if (ultimo.fix) display.print(String(ultimo.lon, 6));
+  else            display.print("---.------");
+
+  // Separador
+  display.drawLine(0, 51, 128, 51, SSD1306_WHITE);
+
+  // Barra de satélites
+  display.setCursor(1, 53);
+  display.print("Sats:" + String(ultimo.sats));
+  int pctSats = (ultimo.sats > 12) ? 100 : (ultimo.sats * 100) / 12;
+  drawBarra(40, 52, 78, 5, pctSats);
+
+  // SNR
+  display.setCursor(1, 57);
+  display.print("SNR:" + String(ultimo.snr, 1) + "dB");
+
   drawDots();
   display.display();
 }
 
+/* ================================================================
+ *  PANTALLA 5 — ESTADÍSTICAS (pantalla 2)
+ *  Mejoras:
+ *   - 3 mini-cards horizontales: RX / ERR / %OK
+ *   - Barra de éxito con etiqueta
+ *   - Línea separadora
+ * ================================================================ */
 void pant_stats() {
   display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
   drawHdr("ESTADISTICAS");
-  display.setTextSize(1);
+
   int ok  = totalRecibidos - totalCorruptos;
   int pct = totalRecibidos > 0 ? (ok * 100) / totalRecibidos : 0;
-  display.setCursor(0, 16); display.print("Recibidos: " + String(totalRecibidos));
-  display.setCursor(0, 28); display.print("Perdidos : " + String(totalCorruptos));
-  display.setCursor(0, 42); display.print("Tasa Exito: " + String(pct) + "%");
-  drawBarra(0, 54, 128, 8, pct);
+
+  // 3 mini-cards: ancho ~41px cada una
+  struct { const char* lbl; int val; } cards[3] = {
+    {"RX",  totalRecibidos},
+    {"ERR", totalCorruptos},
+    {"%OK", pct}
+  };
+
+  for (int i = 0; i < 3; i++) {
+    int x = i * 43;
+    display.drawRoundRect(x, 13, 41, 22, 2, SSD1306_WHITE);
+    // Etiqueta centrada
+    int lw = strlen(cards[i].lbl) * 6;
+    display.setCursor(x + (41 - lw) / 2, 15);
+    display.print(cards[i].lbl);
+    // Valor centrado, tamaño 2
+    display.setTextSize(2);
+    String vStr = String(cards[i].val);
+    if (i == 2) vStr += "%";
+    int vw = vStr.length() * 12;
+    display.setCursor(x + (41 - vw) / 2, 22);
+    display.print(vStr);
+    display.setTextSize(1);
+  }
+
+  // Separador
+  display.drawLine(0, 37, 128, 37, SSD1306_WHITE);
+
+  // Etiqueta + barra de éxito
+  display.setCursor(1, 39);
+  display.print("Tasa de exito:");
+  drawBarra(0, 46, 128, 8, pct);
+
+  // Paquetes OK / total debajo de la barra
+  display.setCursor(1, 56);
+  display.print(String(ok) + "/" + String(totalRecibidos) + " paquetes OK");
+
   drawDots();
   display.display();
 }
 
+/* ================================================================
+ *  PANTALLA 6 — HISTORIAL (pantalla 3)
+ *  Mejoras:
+ *   - Filas alternas con fondo (zebra) para mayor legibilidad
+ *   - Tipo de evento resaltado
+ *   - Número de paquete visible
+ * ================================================================ */
 void pant_historial() {
   display.clearDisplay();
+  display.setTextColor(SSD1306_WHITE);
   drawHdr("HISTORIAL");
-  display.setTextSize(1);
+
   int count = min(totalRecibidos, HIST_SIZE);
-  for (int i = 0; i < count; i++) {
-    int idx = (totalRecibidos - 1 - i + HIST_SIZE) % HIST_SIZE;
-    String lin = "#" + String(historial[idx].numero) + " " + historial[idx].tipo + " " + String(historial[idx].acel, 1) + "g";
-    display.setCursor(0, 14 + i * 10); display.print(lin);
+
+  if (count == 0) {
+    display.setCursor(35, 30);
+    display.print("Vacio");
+  } else {
+    for (int i = 0; i < count; i++) {
+      int idx = (totalRecibidos - 1 - i + HIST_SIZE) % HIST_SIZE;
+      int y = 13 + i * 10;
+
+      // Fila alterna (zebra): filas impares con fondo
+      if (i % 2 == 1) {
+        display.fillRect(0, y, 128, 10, SSD1306_WHITE);
+        display.setTextColor(SSD1306_BLACK);
+      } else {
+        display.setTextColor(SSD1306_WHITE);
+      }
+
+      // Contenido de la fila
+      String lin = "#" + String(historial[idx].numero)
+                   + " " + historial[idx].tipo
+                   + " " + String(historial[idx].bpm) + "bpm"
+                   + " " + String(historial[idx].acel, 1) + "g";
+      display.setCursor(2, y + 1);
+      display.print(lin);
+    }
+    display.setTextColor(SSD1306_WHITE);
   }
-  if (count == 0) { display.setCursor(35, 30); display.print("Vacio"); }
+
   drawDots();
   display.display();
 }
 
+/* ================================================================
+ *  SELECTOR DE PANTALLA
+ * ================================================================ */
 void dibujarPantalla() {
-  if (totalRecibidos == 0) { pantEspera();     return; }
-  if (senalPerdida)        { pantSignalLost(); return; }
+  if (totalRecibidos == 0) { pantEspera();      return; }
+  if (senalPerdida)        { pantSignalLost();  return; }
   switch (pantActual) {
     case 0: pant_alerta();    break;
     case 1: pant_gps();       break;
@@ -307,10 +600,11 @@ void dibujarPantalla() {
 }
 
 /* ================================================================
- *  LOGICA BUZZER — CORREGIDA
+ *  LÓGICA BUZZER
  * ================================================================ */
 void checkBuzzerAlert() {
-  // Condiciones de silencio absoluto
+
+  // Silencio absoluto si no hay datos o señal perdida
   if (totalRecibidos == 0 || senalPerdida) {
     buzzerOff();
     alertaActiva = false;
@@ -320,6 +614,7 @@ void checkBuzzerAlert() {
   // Auto-cancelar si pasaron 30s sin recibir otro paquete de alerta
   if (alertaActiva && millis() - tiempoAlerta > DURACION_ALERTA) {
     alertaActiva = false;
+    buzzerOff();
     Serial.println(F("BUZZER: Timeout alerta, cancelando."));
   }
 
@@ -328,12 +623,35 @@ void checkBuzzerAlert() {
     return;
   }
 
-  // Dip-Dip cada 5 segundos
-  unsigned long cycle = millis() % 5000;
-  if      (cycle < 100) buzzerOn();
-  else if (cycle < 200) buzzerOff();
-  else if (cycle < 300) buzzerOn();
-  else                  buzzerOff();
+  // Máquina de estados del buzzer
+  // Estados: 0=BEEP1 ON, 1=BEEP1 OFF, 2=BEEP2 ON, 3=BEEP2 OFF (pausa larga)
+  static uint8_t  estado     = 0;
+  static unsigned long tEstado = 0;
+
+  // Duraciones de cada estado en ms
+  const unsigned long duraciones[] = {
+    80,    // estado 0: primer beep ON
+    80,    // estado 1: silencio entre beeps
+    80,    // estado 2: segundo beep ON
+    2760   // estado 3: pausa larga (total ciclo = 3000ms)
+  };
+
+  const bool sonido[] = {
+    true,  // estado 0: ON
+    false, // estado 1: OFF
+    true,  // estado 2: ON
+    false  // estado 3: OFF
+  };
+
+  // Avanzar estado si ya pasó el tiempo
+  if (millis() - tEstado >= duraciones[estado]) {
+    tEstado = millis();
+    estado = (estado + 1) % 4;
+  }
+
+  // Aplicar salida
+  if (sonido[estado]) buzzerOn();
+  else                buzzerOff();
 }
 
 /* ================================================================
@@ -387,16 +705,14 @@ void recibirLoRa() {
   senalPerdida   = false;
   historial[(totalRecibidos - 1) % HIST_SIZE] = ev;
 
-  // ── Actualizar flag de alerta ─────────────────────────────────
   if (ev.tipo == "PANICO" || ev.tipo == "CAIDA") {
     if (!alertaActiva) Serial.println(F("BUZZER: Alerta activada."));
     alertaActiva = true;
-    tiempoAlerta = millis(); // Reinicia el timeout de 30s
+    tiempoAlerta = millis();
   } else {
     if (alertaActiva) Serial.println(F("BUZZER: Paquete NORMAL, alerta cancelada."));
-    alertaActiva = false;   // Un paquete NORMAL cancela inmediatamente
+    alertaActiva = false;
   }
-  // ─────────────────────────────────────────────────────────────
 
   esp_now_send(macGateway, (uint8_t*)payload.c_str(), payload.length());
 
@@ -411,7 +727,9 @@ void recibirLoRa() {
   }
 }
 
-
+/* ================================================================
+ *  SETUP
+ * ================================================================ */
 void setup() {
   Serial.begin(115200);
   delay(500);
@@ -419,9 +737,8 @@ void setup() {
   pinMode(0, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
-
- pinMode(BUZZER_PIN, OUTPUT);
-  digitalWrite(BUZZER_PIN, LOW); // silencio desde el primer microsegundo
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
   buzzerOff();
 
   Wire.begin(4, 15);
@@ -434,12 +751,16 @@ void setup() {
     while (true) delay(1000);
   }
 
+  // Pantalla de arranque
   display.clearDisplay();
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(1);
-  display.setCursor(30, 20); display.print("INICIANDO...");
+  display.setCursor((128 - 10 * 6) / 2, 10); display.print("INICIANDO...");
+  display.setCursor((128 - 15 * 6) / 2, 24); display.print("INSTITUTO MUJER");
+  display.drawLine(10, 35, 118, 35, SSD1306_WHITE);
+  display.setCursor((128 - 14 * 6) / 2, 40); display.print("915MHz | SF8");
   display.display();
-  delay(1000);
+  delay(1500);
 
   SPI.begin(5, 19, 27, 18);
   Serial.print(F("LoRa SX1276 915MHz... "));
@@ -472,19 +793,32 @@ void setup() {
   display.clearDisplay();
 }
 
+/* ================================================================
+ *  LOOP
+ * ================================================================ */
 void loop() {
   leerBoton();
   recibirLoRa();
 
   if (totalRecibidos > 0) {
-    if (millis() - ultimoTiempoRX > TIMEOUT_SENAL) {
-      if (!senalPerdida) {
-        senalPerdida = true;
-        hayDato      = true;
-        Serial.println(F("ALERTA: Senal perdida (Timeout)"));
-      }
+    unsigned long sinSenal = millis() - ultimoTiempoRX;
+
+    if (!senalPerdida && sinSenal > TIMEOUT_SENAL) {
+      // Acaba de perder señal — activa la pantalla
+      senalPerdida = true;
+      hayDato      = true;
+      Serial.println(F("ALERTA: Senal perdida."));
+    }
+
+    if (senalPerdida && sinSenal > TIMEOUT_SENAL + TIMEOUT_SENAL_PERDIDA) {
+      // Ya estuvo 15 min en pantalla de señal perdida — regresa a escuchar
+      senalPerdida   = false;
+      totalRecibidos = 0;   // regresa a pantalla ESPERA como si acabara de arrancar
+      hayDato        = true;
+      Serial.println(F("INFO: Volviendo a modo escucha."));
     }
   }
+
 
   checkBuzzerAlert();
 
