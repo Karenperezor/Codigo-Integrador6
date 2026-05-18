@@ -270,7 +270,7 @@ El nodo receptor utiliza la **misma configuracin que el emisor**, pero sin los s
 
 ### Topologia de Red
 
-[](Diagrama.png)
+![Diagrama](Diagrama.png)
 
 ---
 
