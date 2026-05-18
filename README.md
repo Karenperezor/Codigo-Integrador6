@@ -261,12 +261,35 @@ Transmitiendo los datos va **LoRa y GPRS** al Instituto de la Mujer durante una 
 
 ---
 
-### Conexiones Elctricas - Nodo Receptor (Heltec ESP32 LoRa v3)
+### Conexiones Eléctricas - Nodo Receptor (Heltec ESP32 LoRa v2)
 
-El nodo receptor utiliza la **misma configuracin que el emisor**, pero sin los sensores biométricos (MAX30102, MPU6050, GPS, DS1307). Solo mantiene:
-- Heltec ESP32 LoRa v3 (con radio LoRa nativa)
-- Batera LiPo opcional (para operacin porttil)
-- Conexin USB para programacin
+
+#### Display OLED SSD1306 (I2C)
+| Pin OLED   | Pin Heltec ESP32 | Descripción |
+|-----------|-----------------|-------------|
+| SDA | GPIO 4  | Línea de datos I2C |
+| SCL | GPIO 15 | Línea de reloj I2C |
+| RST | GPIO 16 | Reset del display |
+| VCC | 3.3V    | Alimentación positiva |
+| GND | GND     | Referencia común |
+| Dirección I2C | 0x3C | Dirección del dispositivo |
+
+#### Buzzer Activo
+| Pin Buzzer | Pin Heltec ESP32 | Descripción |
+|-----------|-----------------|-------------|
+| Señal (+) | GPIO 13 | Control de buzzer (activo en alto) |
+| GND (-)   | GND     | Referencia común |
+
+
+#### Batería LiPo
+| Conexión | Puerto Heltec ESP32 | Descripción |
+|---------|---------------------|-------------|
+| +4.2V | Puerto USB-C (integrado) | Carga y alimentación |
+| GND   | GND                      | Referencia común |
+
+> **Nota**: El nodo receptor **no** incluye sensores biométricos (MAX30102, MPU6050, GPS NEO-6M ni DS1307).
+> Su función es exclusivamente recibir tramas LoRa de la pulsera, mostrarlas en el display OLED
+> y reenviarlas por ESP-NOW al gateway celular (MAC destino: `80:64:6F:FC:0A:50`).
 
 ---
 
