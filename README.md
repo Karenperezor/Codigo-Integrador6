@@ -236,86 +236,92 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante un
 
 ##  Tabla de Conexiones
 
-### Conexiones Elctricas - Nodo Emisor (Heltec ESP32 LoRa v3)
+### Conexiones Eléctricas - Nodo Emisor (Heltec ESP32 LoRa v3)
+
+![Sensor MAX30..](https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png)
 
 #### Sensor MAX30102 (I2C)
-| Pin MAX30102 | Pin Heltec ESP32 | Descripcin |
-|------------|-----------------|-------------|
-| SDA | GPIO 21 | Lnea de datos I2C |
-| SCL | GPIO 22 | Lnea de reloj I2C |
-| VCC | 3.3V | Alimentación positiva |
-| GND | GND | Referencia comn |
+| Pin MAX30102 | Pin Heltec ESP32 |
+|------------|-----------------|
+| SDA | GPIO 21 |
+| SCL | GPIO 22 |
+| VCC | 3.3V |
+| GND | GND |
 
-#### Acelermetro MPU6050 (I2C)
-| Pin MPU6050 | Pin Heltec ESP32 | Descripcin |
-|------------|-----------------|-------------|
-| SDA | GPIO 21 | Lnea de datos I2C (compartida con MAX30102) |
-| SCL | GPIO 22 | Lnea de reloj I2C (compartida con MAX30102) |
-| VCC | 3.3V | Alimentación positiva |
-| GND | GND | Referencia comn |
-| INT | GPIO 15 | Interrupcin de deteccin de movimiento |
+#### Acelerómetro MPU6050 (I2C)
 
-#### Mdulo GPS NEO-6M (UART)
-| Pin NEO-6M | Pin Heltec ESP32 | Descripcin |
-|-----------|-----------------|-------------|
-| TX | GPIO 16 (RX) | Transmisin de datos GPS |
-| RX | GPIO 17 (TX) | Recepcin de comandos |
-| VCC | 3.3V | Alimentación positiva |
-| GND | GND | Referencia comn |
+| Pin MPU6050 | Pin Heltec ESP32 |
+|------------|-----------------|
+| SDA | GPIO 21 |
+| SCL | GPIO 22 |
+| VCC | 3.3V |
+| GND | GND |
+| INT | GPIO 15 |
+
+#### Módulo GPS NEO-6M (UART)
+
+| Pin NEO-6M | Pin Heltec ESP32 |
+|-----------|-----------------|
+| TX | GPIO 16 (RX) |
+| RX | GPIO 17 (TX) |
+| VCC | 3.3V |
+| GND | GND |
 
 #### Reloj DS1307 (I2C)
-| Pin DS1307 | Pin Heltec ESP32 | Descripcin |
-|-----------|-----------------|-------------|
-| SDA | GPIO 21 | Lnea de datos I2C |
-| SCL | GPIO 22 | Lnea de reloj I2C |
-| VCC | 3.3V | Alimentación positiva |
-| GND | GND | Referencia comn |
-| BAT | Batera CR2032 | Batera de respaldo interna |
 
-#### Botn de Pnico
-| Pin Botn | Pin Heltec ESP32 | Descripcin |
-|----------|-----------------|-------------|
-| Entrada | GPIO 0 | Entrada digital (con pull-up) |
-| GND | GND | Referencia comn |
+| Pin DS1307 | Pin Heltec ESP32 |
+|-----------|-----------------|
+| SDA | GPIO 21 |
+| SCL | GPIO 22 |
+| VCC | 3.3V |
+| GND | GND |
+| BAT | Batería CR2032 |
 
-#### Batera LiPo
-| Conexin | Puerto Heltec ESP32 | Descripcin |
-|---------|-----------------|-------------|
-| +4.2V | Puerto USB-C (integrado) | Carga y alimentacin |
-| GND | GND | Referencia comn |
+#### Botón de Pánico
+
+| Pin Botón | Pin Heltec ESP32 |
+|----------|-----------------|
+| Entrada | GPIO 0 |
+| GND | GND |
+
+#### Batería LiPo
+
+| Conexión | Puerto Heltec ESP32 |
+|---------|-----------------|
+| +4.2V | Puerto USB-C (integrado) |
+| GND | GND |
 
 ---
 
 ### Conexiones Eléctricas - Nodo Receptor (Heltec ESP32 LoRa v2)
 
-### Display OLED SSD1306 (I2C)
+#### Display OLED SSD1306 (I2C)
 
-| Pin OLED | Pin Heltec ESP32 | Descripción |
-|-----------|-----------------|-------------|
-| SDA | GPIO 4 | Línea de datos I2C |
-| SCL | GPIO 15 | Línea de reloj I2C |
-| RST | GPIO 16 | Reset del display |
-| VCC | 3.3V | Alimentación positiva |
-| GND | GND | Referencia común |
-| Dirección I2C | 0x3C | Dirección del dispositivo |
+| Pin OLED | Pin Heltec ESP32 |
+|-----------|-----------------|
+| SDA | GPIO 4 |
+| SCL | GPIO 15 |
+| RST | GPIO 16 |
+| VCC | 3.3V |
+| GND | GND |
+| Dirección I2C | 0x3C |
 
 #### Buzzer Activo
 
-| Pin Buzzer | Pin Heltec ESP32 | Descripción |
-|-----------|-----------------|-------------|
-| Señal (+) | GPIO 13 | Control de buzzer (activo en alto) |
-| GND (-) | GND | Referencia común |
+| Pin Buzzer | Pin Heltec ESP32 |
+|-----------|-----------------|
+| Señal (+) | GPIO 13 |
+| GND (-) | GND |
 
 #### Batería LiPo
 
-| Conexión | Puerto Heltec ESP32 | Descripción |
-|---------|---------------------|-------------|
-| +3.2V | Puerto USB-C (integrado) | Carga y alimentación |
-| GND | GND | Referencia común |
+| Conexión | Puerto Heltec ESP32 |
+|---------|---------------------|
+| +3.2V | Puerto USB-C (integrado) |
+| GND | GND |
 
-
-> **Nota**: El nodo receptor **no** incluye sensores biométricos (MAX30102, MPU6050, GPS NEO-6M ni DS1307).
-> Su función es exclusivamente recibir tramas LoRa de la pulsera, mostrarlas en el display OLED
+> **Nota**: El nodo receptor **no** incluye sensores biométricos (MAX30102, MPU6050, GPS NEO-6M ni DS1307).  
+> Su función es exclusivamente recibir tramas LoRa de la pulsera, mostrarlas en el display OLED  
 > y reenviarlas por ESP-NOW al gateway celular (MAC destino: `80:64:6F:FC:0A:50`).
 
 ---
@@ -330,122 +336,39 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante un
 | Computadora (servidor) | USB Serial |
 
 ---
-
-### Topologia de Red
-
 ### Topología de Red
 
 ![Diagrama](diagrama-IOT.png)
 
-La topología presentada muestra la arquitectura completa del sistema IoT desarrollado para la seguridad de las mujeres, utilizando tecnologías inalámbricas de largo alcance y servicios de monitoreo en tiempo real.
+La topología mostrada representa el funcionamiento general del sistema IoT desarrollado para la seguridad de las mujeres, utilizando tecnologías inalámbricas de largo alcance y monitoreo en tiempo real.
 
-El sistema está dividido en diferentes capas de comunicación y procesamiento, permitiendo la adquisición, transmisión, almacenamiento y visualización de datos biométricos y de ubicación.
+El sistema inicia con una **pulsera inteligente basada en Heltec ESP32 LoRa V3**, la cual integra sensores como:
 
-#### 1. Nodo Emisor - Pulsera Inteligente
+- **MAX30102** para medir BPM y SpO2.
+- **MPU6050** para detectar movimiento y caídas.
+- **GPS NEO-6M** para ubicación en tiempo real.
+- **RTC DS1307** para fecha y hora.
+- **Botón de pánico** para activar alertas.
 
-La primera parte de la topología corresponde al **dispositivo portátil IoT**, diseñado como una pulsera inteligente basada en un **Heltec ESP32 LoRa V3**. Este nodo integra diversos sensores encargados de recopilar información crítica de la usuaria:
+Cuando la usuaria presiona el botón de pánico, los datos son enviados mediante **LoRa 915 MHz** hacia un nodo receptor.
 
-- **GPS NEO-6M**: Obtiene la ubicación geográfica en tiempo real.
-- **MAX30102**: Mide la frecuencia cardíaca y el nivel de oxigenación en sangre (SpO2).
-- **RTC DS1307**: Genera marcas de tiempo para registrar fecha y hora.
-- **MPU6050**: Detecta movimiento, aceleración y posibles caídas.
-- **Botón de pánico**: Activa el envío de alertas de emergencia.
+El **nodo receptor** recibe la información, activa alertas locales mediante buzzer y pantalla OLED, y posteriormente envía los datos a internet usando un **LilyGO T-SIM7000G** con conexión **GPRS**.
 
-Cuando la usuaria presiona el botón de pánico, el sistema inicia la lectura de sensores y transmite la información cada cierto intervalo de tiempo mediante tecnología **LoRa a 915 MHz**.
-
----
-
-#### 2. Comunicación LoRa
-
-La comunicación entre el nodo emisor y el receptor se realiza utilizando el protocolo **LoRa (Long Range)**, el cual permite:
-
-- Comunicación inalámbrica de largo alcance.
-- Bajo consumo energético.
-- Funcionamiento en zonas con acceso limitado a Wi-Fi.
-- Alta confiabilidad para el envío de alertas críticas.
-
-Los paquetes transmitidos contienen datos como:
-
-- Estado SOS.
-- Coordenadas GPS.
-- BPM.
-- SpO2.
-- Valores del acelerómetro.
-- Fecha y hora.
-
----
-
-#### 3. Nodo Receptor
-
-El nodo receptor está compuesto por otro **Heltec ESP32 LoRa**, encargado de recibir las tramas enviadas por la pulsera inteligente.
-
-Este módulo realiza varias funciones:
-
-- Escuchar constantemente el canal LoRa.
-- Verificar la integridad de los paquetes.
-- Activar alertas mediante buzzer.
-- Mostrar información en una pantalla OLED.
-- Preparar los datos para su envío hacia internet.
-
-Además, el receptor se comunica con un **LilyGO TTGO T-SIM7000G**, el cual proporciona conectividad celular mediante tecnología **GPRS**.
-
----
-
-#### 4. Gateway GPRS y Broker MQTT
-
-El módulo **LilyGO T-SIM7000G** funciona como gateway de comunicaciones, permitiendo enviar los datos hacia la nube utilizando la red celular de Telcel.
-
-La transmisión se realiza mediante el protocolo **MQTT**, publicando la información en el broker público **HiveMQ** bajo el tópico:
+La información se publica mediante el protocolo **MQTT** en el broker **HiveMQ**, utilizando el tópico:
 
 ```text
 instituto/mujer/alertas
 ```
 
-MQTT fue seleccionado debido a que es un protocolo ligero, eficiente y ampliamente utilizado en aplicaciones IoT.
+Finalmente, plataformas como **Node-RED**, **Grafana** e **InfluxDB** permiten visualizar, almacenar y monitorear los datos en tiempo real, además de generar alertas automáticas por WhatsApp durante situaciones de emergencia.
 
----
+### Flujo General
 
-#### 5. Plataforma de Monitoreo y Visualización
+```text
+Pulsera Inteligente → LoRa → Receptor → GPRS/MQTT → HiveMQ → Node-RED / Grafana / InfluxDB
+```
 
-Una vez que los datos llegan al broker MQTT, diferentes plataformas consumen la información en tiempo real:
-
-##### Node-RED
-Se utiliza para:
-
-- Procesamiento de mensajes MQTT.
-- Automatización de alertas.
-- Visualización de datos en dashboards.
-- Envío de notificaciones de emergencia.
-
-##### Grafana
-Permite:
-
-- Crear paneles de monitoreo.
-- Visualizar gráficas históricas.
-- Analizar comportamiento de signos vitales.
-- Supervisar datos de sensores en tiempo real.
-
-##### InfluxDB
-Funciona como base de datos temporal e histórica para:
-
-- Almacenar signos vitales.
-- Guardar registros GPS.
-- Registrar eventos de emergencia.
-- Mantener historiales de aceleración y actividad.
-
----
-
-#### 6. Sistema de Alertas
-
-Finalmente, el sistema genera alertas automáticas mediante WhatsApp cuando:
-
-- Se activa el botón de pánico.
-- Se detectan anomalías en signos vitales.
-- Existen cambios bruscos de movimiento o posibles caídas.
-
-Esto permite que el Instituto de la Mujer pueda reaccionar rápidamente ante situaciones de riesgo.
-
----
+[ Volver al índice](#tabla-de-contenidos)
 
 ### Flujo General de la Comunicación
 
@@ -457,7 +380,6 @@ Pulsera Inteligente → LoRa → Nodo Receptor → GPRS/MQTT → HiveMQ → Node
 ![Diagrama](diagrama-IOT.png)
 
 ---
-
 
 
 ##  Tabla de Direccionamiento
