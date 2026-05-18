@@ -70,7 +70,7 @@ Este proyecto implementa un **sistema IoT funcional basado en tecnologías inal�
 
 [ Volver al índice](#tabla-de-contenidos)
 
-### Contexto del Problema
+### Plantemiento del Problema
 
 El proyecto aborda directamente la problemática de la **violencia de género en el municipio de Tlahuelilpan, Hidalgo**, donde el **70.1% de las mujeres de 15 años o más han experimentado al menos un incidente de violencia** según datos del INEGI. Esta solución se alinea con el **eje de Seguridad Humana de los PRONACES** (Programas Nacionales Estratégicos).
 
