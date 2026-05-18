@@ -16,13 +16,12 @@
 
 ## Estudiantes
 
-| Estudiante |
-|-------------|
-| **Melanie Santiago Resendiz** (230110616) |
-| **Karen Perez Ortiz** (230110326) |
-| **Carol Mera Ibarra** (230110264) |
-| **Andrea Jacob Salas** (230110449) |
-| **Freyra Wendy Martinez Martinez** (230110434) |
+Estudiante 
+**Melanie Santiago Resendiz** (230110616) 
+**Karen Perez Ortiz** (230110326) 
+**Carol Mera Ibarra** (230110264) 
+**Andrea Jacob Salas** (230110449) 
+ **Freyra Wendy Martinez Martinez** (230110434) 
 
 **Institución**: Instituto Tecnológico Superior del Occidente del Estado de Hidalgo  
 **Grado y Grupo**: 6 "B"  
@@ -238,8 +237,6 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante un
 
 ### Conexiones Eléctricas - Nodo Emisor (Heltec ESP32 LoRa v3)
 
-![Sensor MAX30..](https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png)
-
 #### Sensor MAX30102 (I2C)
 | Pin MAX30102 | Pin Heltec ESP32 |
 |------------|-----------------|
@@ -247,6 +244,9 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante un
 | SCL | GPIO 22 |
 | VCC | 3.3V |
 | GND | GND |
+
+![Pinout Sensor MAX30102|200](https://uelectronics.com/wp-content/uploads/2019/07/AR1032-MAX30102-Sensor-Pulso-Concentracion-Oxigeno-PINOUT_1-768x768.webp)
+
 
 #### Acelerómetro MPU6050 (I2C)
 
@@ -258,6 +258,8 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante un
 | GND | GND |
 | INT | GPIO 15 |
 
+![Acelerómetro MPU6050 (I2C)](https://uelectronics.com/wp-content/uploads/2019/07/AR1032-MAX30102-Sensor-Pulso-Concentracion-Oxigeno-PINOUT_1-768x768.webp)
+
 #### Módulo GPS NEO-6M (UART)
 
 | Pin NEO-6M | Pin Heltec ESP32 |
@@ -266,6 +268,8 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante un
 | RX | GPIO 17 (TX) |
 | VCC | 3.3V |
 | GND | GND |
+
+![Módulo GPS NEO-6M (UART)](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd-7gGzjY6AvZn-i_AcpY97MMVZK8oROerRw&s-768x768.webp)
 
 #### Reloj DS1307 (I2C)
 
@@ -277,6 +281,9 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante un
 | GND | GND |
 | BAT | Batería CR2032 |
 
+![Reloj DS1307 (I2C)](https://http2.mlstatic.com/D_NQ_NP_990661-CBT73204345679_122023-O.webp-768x768.webp)
+
+
 #### Botón de Pánico
 
 | Pin Botón | Pin Heltec ESP32 |
@@ -284,12 +291,16 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante un
 | Entrada | GPIO 0 |
 | GND | GND |
 
+![Botón de Pánico)](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJZQETrRQBpzej9oFUl5SXSExYzf2HtHaveg&s-768x768.webp)
+
 #### Batería LiPo
 
 | Conexión | Puerto Heltec ESP32 |
 |---------|-----------------|
-| +4.2V | Puerto USB-C (integrado) |
+| +3.7V | Puerto USB-C (integrado) |
 | GND | GND |
+
+![Reloj DS1307 (I2C)](https://uelectronics.com/wp-content/uploads/2019/07/AR1069-Bateria-2000mAh-4.webp-768x768.webp)
 
 ---
 
