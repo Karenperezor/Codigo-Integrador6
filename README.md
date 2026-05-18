@@ -1,4 +1,4 @@
-#  IoT Implementation for Women's Safety
+# IoT Implementation for Women's Safety
 ## Implementación del IoT para la Seguridad de las Mujeres
 
 **Tema 1: Estándares de Comunicación Inalámbrica**
@@ -9,25 +9,26 @@
 ![Badge](https://img.shields.io/badge/Hardware-Heltec%20ESP32%20LoRa-blueviolet)
 ![Badge](https://img.shields.io/badge/Protocol-LoRa%2BGPRS-orange)
 
- **Repositorio GitHub:** [github.com/Karenperezor/Codigo-Integrador6](https://github.com/Karenperezor/Codigo-Integrador6)  
- **Estado:** Repositorio Público - Acceso abierto para replicación del proyecto
+**Repositorio GitHub:** [github.com/Karenperezor/Codigo-Integrador6](https://github.com/Karenperezor/Codigo-Integrador6)  
+**Estado:** Repositorio Público - Acceso abierto para replicación del proyecto
 
 ---
-##  Estudiantes
 
-| Estudiante | Rol | Contribucion |
-|-----------|-----|--------------|
-| **Melanie Santiago Resendiz** (230110616) |  Tecnico | Diseño de hardware, sensores, PCB |
-| **Karen Prez Ortiz** (230110326) | Desarrolladora LoRa/GPRS | Configuración de comunicaciones inalámbricas |
-| **Carol Mera Ibarra** (230110264) | Ingeniera de Datos | InfluxDB, Grafana, almacenamiento historico |
-| **Andrea Jacob Salas** (230110449) | Desarrolladora Node-RED | Dashboard, logica de alertas, interfaz |
-| **Freyra Wendy Martnez Martnez** (230110434) | Diseñadora de Carcasa | Fabricacion 3D |
+## Estudiantes
 
-**Institucion**: Instituto Tecnolgico Superior del Occidente del Estado de Hidalgo  
+| Estudiante |
+|-------------|
+| **Melanie Santiago Resendiz** (230110616) |
+| **Karen Perez Ortiz** (230110326) |
+| **Carol Mera Ibarra** (230110264) |
+| **Andrea Jacob Salas** (230110449) |
+| **Freyra Wendy Martinez Martinez** (230110434) |
+
+**Institución**: Instituto Tecnológico Superior del Occidente del Estado de Hidalgo  
 **Grado y Grupo**: 6 "B"  
 **Materia**: Tecnologías Inalámbricas - Tema 1: Estándares de Comunicación Inalámbrica
 --- 
-## Tabla de Contenidos
+
  
 ## Tabla de Contenidos
 
@@ -63,8 +64,7 @@
   - [NEO-6M (Módulo GPS)](#neo-6m-módulo-gps)
 
 ---
-
-##  Introducción
+## Introducción
 
 Este proyecto implementa un **sistema IoT funcional basado en tecnologías inalámbricas de largo alcance y bajo consumo** para el monitoreo en tiempo real de signos vitales y geolocalización de mujeres en situación de vulnerabilidad. El prototipo opera mediante la integración de nodos sensores y gateways que transmiten datos biométricos desde una pulsera emisora inteligente hacia un servidor central de procesamiento y visualización.
 
@@ -76,95 +76,107 @@ El proyecto aborda directamente la problemática de la **violencia de género en
 
 ### Arquitectura de Comunicación Inalámbrica
 
-El sistema integra dos categoras de tecnologías inalámbricas:
+El sistema integra dos categorías de tecnologías inalámbricas:
 
 - **LoRa (LPWAN)**: Comunicación de corto a medio alcance entre la pulsera emisora y el gateway receptor
-- **GPRS (WWAN)**: Transmisin de datos hacia el servidor en la nube desde el gateway
+- **GPRS (WWAN)**: Transmisión de datos hacia el servidor en la nube desde el gateway
 
-Esta combinacin garantiza **cobertura robusta en escenarios donde el Wi-Fi es limitado** y proporciona **conectividad sin interrupciones durante emergencias**.
+Esta combinación garantiza **cobertura robusta en escenarios donde el Wi-Fi es limitado** y proporciona **conectividad sin interrupciones durante emergencias**.
 
 ### Característica Diferenciadora: Privacidad Centrada en el Consentimiento
 
-A diferencia de otras soluciones de monitoreo continuo, este prototipo incorpora un **mecanismo de privacidad que activa la transmisin de datos nicamente durante una hora a partir del momento en que la usuaria presiona el botn de pnico**. Esto evita el rastreo permanente de su ubicacin, diferenciando al prototipo de sistemas basados en WLAN o satelitales.
+A diferencia de otras soluciones de monitoreo continuo, este prototipo incorpora un **mecanismo de privacidad que activa la transmisión de datos únicamente durante una hora a partir del momento en que la usuaria presiona el botón de pánico**. Esto evita el rastreo permanente de su ubicación, diferenciando al prototipo de sistemas basados en WLAN o satelitales.
 
 ---
 
-##  Justificación
+## Justificación
 
-### Por qu este proyecto es necesario
+### Por qué este proyecto es necesario
 
-1. **Violencia de Gnero**: La violencia contra las mujeres es un problema crtico en Mxico que requiere soluciones tecnolgicas accesibles y confiables.
+1. **Violencia de Género**: La violencia contra las mujeres es un problema crítico en México que requiere soluciones tecnológicas accesibles y confiables.
 
-2. **Tecnologa Apropiada**: Las tecnologías inalámbricas como LoRa y GPRS permiten:
+2. **Tecnología Apropiada**: Las tecnologías inalámbricas como LoRa y GPRS permiten:
    - Monitoreo en tiempo real sin dependencia de Wi-Fi
-   - Operacin en zonas con cobertura celular limitada
-   - Bajo consumo energtico para dispositivos porttiles
+   - Operación en zonas con cobertura celular limitada
+   - Bajo consumo energético para dispositivos portátiles
 
-3. **Beneficiario Directo**: El **Instituto de la Mujer de Tlahuelilpan** requiere herramientas de vanguardia para la proteccin y seguimiento de sus usuarias con precisin sin precedentes.
+3. **Beneficiario Directo**: El **Instituto de la Mujer de Tlahuelilpan** requiere herramientas de vanguardia para la protección y seguimiento de sus usuarias con precisión sin precedentes.
 
-4. **Aplicacin Educativa**: Este desarrollo fortalece la comprensin prctica de los estndares de comunicacin inalmbrica (Tema 1, 2 y 3) mediante un caso de uso real y socialmente relevante.
+4. **Aplicación Educativa**: Este desarrollo fortalece la comprensión práctica de los estándares de comunicación inalámbrica (Tema 1, 2 y 3) mediante un caso de uso real y socialmente relevante.
 
-5. **Escalabilidad**: El diseo modular permite escalar la solución a otras instituciones y municipios con problemáticas similares.
+5. **Escalabilidad**: El diseño modular permite escalar la solución a otras instituciones y municipios con problemáticas similares.
 
 [ Volver al índice](#tabla-de-contenidos)
 
 ---
 
-##  Objetivos
+## Objetivos
 
 ### Objetivo General
 
-Disear y construir un **prototipo IoT funcional basado en Heltec ESP32 LoRa v3** que monitoree en tiempo real:
-- Ritmo cardiaco (BPM)
-- Oxigenacin en sangre (SpO2)
-- Aceleracin en tres ejes (X, Y, Z)
-- Ubicacin GPS de la usuaria
+Diseñar y construir un **prototipo IoT funcional basado en Heltec ESP32 LoRa v3** que monitoree en tiempo real:
+- Ritmo cardíaco (BPM)
+- Oxigenación en sangre (SpO2)
+- Aceleración en tres ejes (X, Y, Z)
+- Ubicación GPS de la usuaria
 
-Transmitiendo los datos va **LoRa y GPRS** al Instituto de la Mujer durante una **ventana de una hora activada por una sola pulsacin del botn de pnico**, aplicando los estndares de comunicacin inalmbrica para garantizar **calidad, confiabilidad y seguridad** de los datos.
+Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante una **ventana de una hora activada por una sola pulsación del botón de pánico**, aplicando los estándares de comunicación inalámbrica para garantizar **calidad, confiabilidad y seguridad** de los datos.
 
-### Objetivos Especficos
+### Objetivos Específicos
 
-1. **Implementar la lectura simultnea** de SpO2, BPM y aceleracin (ejes X, Y, Z) en la pulsera emisora LoRa, incluyendo activacin por doble pulsacin del botn de pnico.
+1. **Implementar la lectura simultánea** de SpO2, BPM y aceleración (ejes X, Y, Z) en la pulsera emisora LoRa, incluyendo activación por doble pulsación del botón de pánico.
 
-2. **Configurar la comunicacin LoRa** entre la pulsera emisora y el gateway LilyGO T-SIM, verificando la integridad de la trama en el display de cada mdulo.
+2. **Configurar la comunicación LoRa** entre la pulsera emisora y el gateway LilyGO T-SIM, verificando la integridad de la trama en el display de cada módulo.
 
-3. **Establecer el enlace GPRS** con el broker pblico HiveMQ mediante el APN de Telcel, publicando paquetes JSON con todos los parmetros del sensor.
+3. **Establecer el enlace GPRS** con el broker público HiveMQ mediante el APN de Telcel, publicando paquetes JSON con todos los parámetros del sensor.
 
-4. **Desarrollar un dashboard en Node-RED** con mapa GPS en tiempo real, medidores de BPM y SpO2, historial de aceleracin y lgica de alertas automticas.
+4. **Desarrollar un dashboard en Node-RED** con mapa GPS en tiempo real, medidores de BPM y SpO2, historial de aceleración y lógica de alertas automáticas.
 
-5. **Estructurar una base de datos en InfluxDB** vinculada a Grafana para el registro histrico de signos vitales, aceleracin y geolocalización.
+5. **Estructurar una base de datos en InfluxDB** vinculada a Grafana para el registro histórico de signos vitales, aceleración y geolocalización.
 
 [ Volver al índice](#tabla-de-contenidos)
-
 ---
 
-##  Requerimientos de Software y Hardware
+## Requerimientos de Software y Hardware
 
 ### Hardware
 
 #### Nodo Emisor (Pulsera Inteligente)
-| Componente | Modelo | Funcin |
+
+
+
+| Componente | Modelo | Función |
 |-----------|--------|---------|
 | **Microcontrolador Principal** | Heltec ESP32 LoRa v3 | Procesamiento central, radio LoRa integrado (SX1262) |
-| **Sensor Biomtrico** | MAX30102 | Medicin de ritmo cardiaco (BPM) y oxigenacin (SpO2) |
-| **Acelermetro** | MPU6050 | Deteccin de movimiento y cadas (ejes X, Y, Z) |
-| **Mdulo GPS** | NEO-6M | Geolocalizacin en tiempo real |
+| **Sensor Biométrico** | MAX30102 | Medición de ritmo cardíaco (BPM) y oxigenación (SpO2) |
+| **Acelerómetro** | MPU6050 | Detección de movimiento y caídas (ejes X, Y, Z) |
+| **Módulo GPS** | NEO-6M | Geolocalización en tiempo real |
 | **Reloj en Tiempo Real** | DS1307 | Marca de tiempo independiente de GPS |
-| **Batera** | LiPo 4.2V (3000-5000 mAh) | Alimentación del nodo emisor |
-| **Carcasa** | Impresin 3D personalizada | Proteccin de componentes |
+| **Batería** | LiPo 3.7V (2000 mAh) | Alimentación del nodo emisor |
+| **Carcasa** | Impresión 3D personalizada | Protección de componentes |
+
+
 
 #### Nodo Receptor y Gateway
-| Componente | Modelo | Funcin |
+
+
+
+| Componente | Modelo | Función |
 |-----------|--------|---------|
-| **Receptor LoRa** | Heltec ESP32 LoRa v3 | Recepcin de tramas LoRa |
-| **Gateway de Datos** | LilyGO T-SIM7000 | Mdulo GPRS para conexin celular |
+| **Receptor LoRa** | Heltec ESP32 LoRa v3 | Recepción de tramas LoRa |
+| **Gateway de Datos** | LilyGO T-SIM7000 | Módulo GPRS para conexión celular |
 | **Red Celular** | Telcel (2G/3G) | Conectividad WWAN |
 
 #### Servidor Local
-| Componente | Especificacin | Funcin |
+
+| Componente | Especificación | Función |
 |-----------|--------|---------|
 | **Computadora** | x86 / ARM | Alojamiento de servicios |
 | **SO** | Linux / Windows / macOS | Sistema operativo |
+
+
+
+
 
 ### Software
 
@@ -276,29 +288,31 @@ Transmitiendo los datos va **LoRa y GPRS** al Instituto de la Mujer durante una 
 
 ### Conexiones Eléctricas - Nodo Receptor (Heltec ESP32 LoRa v2)
 
+### Display OLED SSD1306 (I2C)
 
-#### Display OLED SSD1306 (I2C)
-| Pin OLED   | Pin Heltec ESP32 | Descripción |
+| Pin OLED | Pin Heltec ESP32 | Descripción |
 |-----------|-----------------|-------------|
-| SDA | GPIO 4  | Línea de datos I2C |
+| SDA | GPIO 4 | Línea de datos I2C |
 | SCL | GPIO 15 | Línea de reloj I2C |
 | RST | GPIO 16 | Reset del display |
-| VCC | 3.3V    | Alimentación positiva |
-| GND | GND     | Referencia común |
+| VCC | 3.3V | Alimentación positiva |
+| GND | GND | Referencia común |
 | Dirección I2C | 0x3C | Dirección del dispositivo |
 
 #### Buzzer Activo
+
 | Pin Buzzer | Pin Heltec ESP32 | Descripción |
 |-----------|-----------------|-------------|
 | Señal (+) | GPIO 13 | Control de buzzer (activo en alto) |
-| GND (-)   | GND     | Referencia común |
-
+| GND (-) | GND | Referencia común |
 
 #### Batería LiPo
+
 | Conexión | Puerto Heltec ESP32 | Descripción |
 |---------|---------------------|-------------|
-| +4.2V | Puerto USB-C (integrado) | Carga y alimentación |
-| GND   | GND                      | Referencia común |
+| +3.2V | Puerto USB-C (integrado) | Carga y alimentación |
+| GND | GND | Referencia común |
+
 
 > **Nota**: El nodo receptor **no** incluye sensores biométricos (MAX30102, MPU6050, GPS NEO-6M ni DS1307).
 > Su función es exclusivamente recibir tramas LoRa de la pulsera, mostrarlas en el display OLED
@@ -306,22 +320,145 @@ Transmitiendo los datos va **LoRa y GPRS** al Instituto de la Mujer durante una 
 
 ---
 
-### Conexiones Elctricas - Gateway LilyGO T-SIM7000 (GPRS)
+### Conexiones Eléctricas - Gateway LilyGO T-SIM7000 (GPRS)
 
-| Componente | Conexin | Protocolo |
-|-----------|---------|-----------|
-| Nodo Receptor Heltec | UART Serial | Comunicación serial |
-| Antena SIM | Ranura SIM integrada | Tarjeta SIM Telcel |
-| Antena GPRS | Conectada en placa | Transmisin celular |
-| Computadora (servidor) | USB Serial | Comunicación con servidor |
+| Componente | Conexión |
+|-----------|---------|
+| Nodo Receptor Heltec | UART Serial |
+| Antena SIM | Ranura SIM integrada |
+| Antena GPRS | Conectada en placa |
+| Computadora (servidor) | USB Serial |
 
 ---
 
 ### Topologia de Red
 
-![Diagrama](Diagrama.png)
+### Topología de Red
+
+![Diagrama](diagrama-IOT.png)
+
+La topología presentada muestra la arquitectura completa del sistema IoT desarrollado para la seguridad de las mujeres, utilizando tecnologías inalámbricas de largo alcance y servicios de monitoreo en tiempo real.
+
+El sistema está dividido en diferentes capas de comunicación y procesamiento, permitiendo la adquisición, transmisión, almacenamiento y visualización de datos biométricos y de ubicación.
+
+#### 1. Nodo Emisor - Pulsera Inteligente
+
+La primera parte de la topología corresponde al **dispositivo portátil IoT**, diseñado como una pulsera inteligente basada en un **Heltec ESP32 LoRa V3**. Este nodo integra diversos sensores encargados de recopilar información crítica de la usuaria:
+
+- **GPS NEO-6M**: Obtiene la ubicación geográfica en tiempo real.
+- **MAX30102**: Mide la frecuencia cardíaca y el nivel de oxigenación en sangre (SpO2).
+- **RTC DS1307**: Genera marcas de tiempo para registrar fecha y hora.
+- **MPU6050**: Detecta movimiento, aceleración y posibles caídas.
+- **Botón de pánico**: Activa el envío de alertas de emergencia.
+
+Cuando la usuaria presiona el botón de pánico, el sistema inicia la lectura de sensores y transmite la información cada cierto intervalo de tiempo mediante tecnología **LoRa a 915 MHz**.
 
 ---
+
+#### 2. Comunicación LoRa
+
+La comunicación entre el nodo emisor y el receptor se realiza utilizando el protocolo **LoRa (Long Range)**, el cual permite:
+
+- Comunicación inalámbrica de largo alcance.
+- Bajo consumo energético.
+- Funcionamiento en zonas con acceso limitado a Wi-Fi.
+- Alta confiabilidad para el envío de alertas críticas.
+
+Los paquetes transmitidos contienen datos como:
+
+- Estado SOS.
+- Coordenadas GPS.
+- BPM.
+- SpO2.
+- Valores del acelerómetro.
+- Fecha y hora.
+
+---
+
+#### 3. Nodo Receptor
+
+El nodo receptor está compuesto por otro **Heltec ESP32 LoRa**, encargado de recibir las tramas enviadas por la pulsera inteligente.
+
+Este módulo realiza varias funciones:
+
+- Escuchar constantemente el canal LoRa.
+- Verificar la integridad de los paquetes.
+- Activar alertas mediante buzzer.
+- Mostrar información en una pantalla OLED.
+- Preparar los datos para su envío hacia internet.
+
+Además, el receptor se comunica con un **LilyGO TTGO T-SIM7000G**, el cual proporciona conectividad celular mediante tecnología **GPRS**.
+
+---
+
+#### 4. Gateway GPRS y Broker MQTT
+
+El módulo **LilyGO T-SIM7000G** funciona como gateway de comunicaciones, permitiendo enviar los datos hacia la nube utilizando la red celular de Telcel.
+
+La transmisión se realiza mediante el protocolo **MQTT**, publicando la información en el broker público **HiveMQ** bajo el tópico:
+
+```text
+instituto/mujer/alertas
+```
+
+MQTT fue seleccionado debido a que es un protocolo ligero, eficiente y ampliamente utilizado en aplicaciones IoT.
+
+---
+
+#### 5. Plataforma de Monitoreo y Visualización
+
+Una vez que los datos llegan al broker MQTT, diferentes plataformas consumen la información en tiempo real:
+
+##### Node-RED
+Se utiliza para:
+
+- Procesamiento de mensajes MQTT.
+- Automatización de alertas.
+- Visualización de datos en dashboards.
+- Envío de notificaciones de emergencia.
+
+##### Grafana
+Permite:
+
+- Crear paneles de monitoreo.
+- Visualizar gráficas históricas.
+- Analizar comportamiento de signos vitales.
+- Supervisar datos de sensores en tiempo real.
+
+##### InfluxDB
+Funciona como base de datos temporal e histórica para:
+
+- Almacenar signos vitales.
+- Guardar registros GPS.
+- Registrar eventos de emergencia.
+- Mantener historiales de aceleración y actividad.
+
+---
+
+#### 6. Sistema de Alertas
+
+Finalmente, el sistema genera alertas automáticas mediante WhatsApp cuando:
+
+- Se activa el botón de pánico.
+- Se detectan anomalías en signos vitales.
+- Existen cambios bruscos de movimiento o posibles caídas.
+
+Esto permite que el Instituto de la Mujer pueda reaccionar rápidamente ante situaciones de riesgo.
+
+---
+
+### Flujo General de la Comunicación
+
+```text
+Pulsera Inteligente → LoRa → Nodo Receptor → GPRS/MQTT → HiveMQ → Node-RED / Grafana / InfluxDB → Alertas
+```
+
+[ Volver al índice](#tabla-de-contenidos)
+![Diagrama](diagrama-IOT.png)
+
+---
+
+
 
 ##  Tabla de Direccionamiento
 
