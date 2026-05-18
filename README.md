@@ -91,7 +91,7 @@ A diferencia de otras soluciones de monitoreo continuo, este prototipo incorpora
 
 ## Justificación
 
-### Por qué este proyecto es necesario
+### ¿Por qué este proyecto es necesario?
 
 1. **Violencia de Género**: La violencia contra las mujeres es un problema crítico en México que requiere soluciones tecnológicas accesibles y confiables.
 
