@@ -238,8 +238,8 @@ Transmitiendo los datos vía **LoRa y GPRS** a la Instancia Gubernamental durant
 ## Tabla de Conexiones
 
 ### Nodo Emisor (Heltec ESP32 LoRa v3)
+[Heltec ESP32 LoRa v3](DIAGRAMA-CONEXIONES)
 
-> **Nota:** Las imágenes de referencia de cada módulo se incluyen en la carpeta `/img` del repositorio. Consulta también los datasheets enlazados en la sección de [Bibliografía](#bibliografía).
 
 #### Sensor MAX30102 (I2C)
 
@@ -428,6 +428,8 @@ Finalmente, plataformas como **Node-RED**, **Grafana** e **InfluxDB** permiten v
 | **Tags (índices)** | user_id, device_id, timestamp | Claves de búsqueda |
 
 #### Node-RED (Servidor Local)
+
+[FLUJO DE NODE RED](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/node-red.json)
 
 | Parámetro | Valor | Descripción |
 |-----------|-------|-------------|
