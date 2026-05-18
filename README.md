@@ -247,7 +247,9 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | VCC | 3.3V |
 | GND | GND |
 
-![Pinout Sensor MAX30102|200](https://lastminuteengineers.com/wp-content/uploads/arduino/MAX30102-Module-Pinout.png-768x768.webp)
+![Módulo GPS NEO-6M (UART)](https://electropeak.com/learn/wp-content/uploads/2020/12/MAX30102-Module-Arduino-Pinout-768x768.jpg)
+
+
 
 
 #### Acelerómetro MPU6050 (I2C)
@@ -283,7 +285,7 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | GND | GND |
 | BAT | Batería CR2032 |
 
-![Reloj DS1307 (I2C)](https://http2.mlstatic.com/D_NQ_NP_990661-CBT73204345679_122023-O.webp-768x768.webp)
+![Reloj DS1307](https://http2.mlstatic.com/D_NQ_NP_990661-CBT73204345679_122023-O.webp-768x768.webp)
 
 
 #### Botón de Pánico
