@@ -483,7 +483,7 @@ update_dashboard(BPM, SpO2, acceleration, GPS_location, alert_type);
 -  Buzzer inteligente (solo en pnico)
 -  LED indicador de actividad
 
-  - [Nodo Receptor - receptor_Hv2.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/receptor_Hv2.ino)
+[Nodo Receptor - receptor_Hv2.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/receptor_Hv2.ino)
 
 ### 3. Código del Gateway GPRS (LilyGO T-SIM7000 + ESP-NOW)
 
@@ -496,7 +496,7 @@ Archivo: Version1-TRANSMISOR.ino
 -  Reconexin automtica GPRS y MQTT
 -  LED de confirmacin visual
 
-  - [Gateway Celular - lilygo.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/lilygo.ino)
+[Gateway Celular - lilygo.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/lilygo.ino)
 
 
 [ Volver al índice](#tabla-de-contenidos)
