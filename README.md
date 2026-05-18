@@ -83,7 +83,7 @@ El sistema integra dos categoras de tecnologías inalámbricas:
 
 Esta combinacin garantiza **cobertura robusta en escenarios donde el Wi-Fi es limitado** y proporciona **conectividad sin interrupciones durante emergencias**.
 
-### Caracterstica Diferenciadora: Privacidad Centrada en el Consentimiento
+### Característica Diferenciadora: Privacidad Centrada en el Consentimiento
 
 A diferencia de otras soluciones de monitoreo continuo, este prototipo incorpora un **mecanismo de privacidad que activa la transmisin de datos nicamente durante una hora a partir del momento en que la usuaria presiona el botn de pnico**. Esto evita el rastreo permanente de su ubicacin, diferenciando al prototipo de sistemas basados en WLAN o satelitales.
 
