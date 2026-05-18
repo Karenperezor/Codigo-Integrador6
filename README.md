@@ -14,26 +14,27 @@
 
 ---
 
-##  Tabla de Contenidos
-
-- [ Introducción](#introducción)
-- [ Justificación](#justificación)
-- [ Objetivos](#objetivos)
-- [ Requerimientos de Software y Hardware](#requerimientos-de-software-y-hardware)
-- [ Tabla de Conexiones](#tabla-de-conexiones)
-- [ Tabla de Direccionamiento](#tabla-de-direccionamiento)
-- [ Esquema de Funcionamiento](#esquema-de-funcionamiento)
-- [ Códigos Comentados](#códigos-comentados)
-  - [Nodo Emisor](#1-código-del-nodo-emisor-heltec-esp32-lora-v3)
-  - [Nodo Receptor](#2-código-del-nodo-receptor-heltec-esp32-lora-v3)
-  - [Gateway GPRS](#3-configuracin-del-gateway-gprs-lilygo-t-sim7000)
-  - [Node-RED](#4-flujo-de-node-red-formato-json)
-- [ Configuraciones de Sensores](#configuración-de-sensores-y-tarjetas)
-- [ Alimentación](#alimentación-móvil-y-fija)
-- [ Recomendaciones y Precauciones](#recomendaciones-de-mejora-y-precauciones-de-uso)
-- [ Instalación Rápida](#instalación-y-configuracin-rpida)
-- [ Autores](#estudiantes)
-- [ Bibliografía](#bibliografía)
+## Tabla de Contenidos
+ 
+- [Arquitectura del Sistema](#arquitectura-del-sistema)
+- [Equipo de Desarrollo](#equipo-de-desarrollo)
+- [Tabla de Conexiones General](#tabla-de-conexiones-general)
+- [Especificaciones Técnicas de Sensores](#especificaciones-técnicas-de-sensores)
+- [Tabla de Direccionamiento I2C](#tabla-de-direccionamiento-i2c)
+- [Formato de Datos de Salida](#formato-de-datos-de-salida)
+- [Códigos del Proyecto](#códigos-del-proyecto)
+  - [Nodo Emisor - Version1-TRANSMISOR.ino](#nodo-emisor-pulsera---heltec-esp32-lora-v3)
+  - [Nodo Receptor - receptor_Hv2.ino](#nodo-receptor-heltec-esp32-lora-v3)
+  - [Gateway Celular - lilygo.ino](#gateway-celular-lilygo-t-sim7000)
+- [Flujo de Datos Completo](#flujo-de-datos-completo)
+- [Parámetros de Configuración](#parámetros-de-configuración)
+- [Requerimientos de Software](#requerimientos-de-software)
+- [Requerimientos de Hardware](#requerimientos-de-hardware)
+- [Alimentación](#alimentación)
+- [Impacto Esperado](#impacto-esperado)
+- [Instalación y Configuración](#instalación-y-configuración)
+- [Precauciones y Recomendaciones](#precauciones-y-recomendaciones)
+- [Bibliografía](#bibliografía)
 
 ---
 
@@ -1030,6 +1031,8 @@ void display_received_data() {
 
 ### 3. Código del Gateway GPRS (LilyGO T-SIM7000 + ESP-NOW)
 
+Archivo: Version1-TRANSMISOR.ino
+
 **Caractersticas principales:**
 -  Recibe datos por **ESP-NOW** del receptor LoRa
 -  Conecta a red celular Telcel (GPRS/CAT-M)
@@ -1567,43 +1570,56 @@ docker run -d -p 1880:1880 nodered/node-red
 
 ---
 
-##  Recomendaciones de Mejora y Precauciones de Uso
-
-### Mejoras Tcnicas Identificadas
-
-| rea | Limitacin Actual | Propuesta de Solucin | Impacto |
+## Recomendaciones de Mejora y Precauciones de Uso
+ 
+### Mejoras Técnicas Identificadas
+ 
+| Área | Limitación Actual | Propuesta de Solución | Impacto |
 |-----|------------------|----------------------|---------|
-| **Consumo Energtico** | Batera dura ~7 horas | Implementar deep sleep, GPS bajo demanda, BLE de respaldo | Extender a 24+ horas |
-| **Tamao del Dispositivo** | Pulsera muy grande (actual ~8060mm) | Redisear PCB a 4040mm, integrar componentes | Mejor discretion, aceptacin usuario |
+| **Consumo Energético** | Batería dura ~10 horas (2000mAh) | Implementar deep sleep, GPS bajo demanda, BLE de respaldo | Extender a 24+ horas |
+| **Tamaño del Dispositivo** | Pulsera muy grande (actual ~80x60mm) | Rediseñar PCB a 40x40mm, integrar componentes | Mejor discreción, aceptación usuario |
 | **Redundancia** | Una sola ruta (LoRa+GPRS) | Agregar Bluetooth BLE como fallback | Funcionar sin cobertura celular |
-| **Seguridad MQTT** | Broker pblico sin autenticacin | Migrar a broker privado con TLS+tokens | Proteger privacidad de datos |
+| **Seguridad MQTT** | Broker público sin autenticación | Migrar a broker privado con TLS+tokens | Proteger privacidad de datos |
 | **Monitoreo Remoto** | Solo local | Implementar VPN segura para acceso remoto | Operadores pueden monitorear desde cualquier lugar |
-| **Precisin GPS** | 2.5 metros | Implementar correcciones DGPS/RTCM | Ubicacin más precisa |
-| **Gestin de Alertas** | Manual | Dashboard automtico con notificaciones SMS | Respuesta más rpida |
-
+| **Precisión GPS** | 2.5 metros | Implementar correcciones DGPS/RTCM | Ubicación más precisa |
+| **Gestión de Alertas** | Manual | Dashboard automático  | Respuesta más rápida |
+ 
+### Historial de Mejoras Implementadas
+ 
+| Versión | Cambio | Fecha | Efecto |
+|---------|--------|-------|--------|
+| v1.0 | Batería original 1000mAh | Marzo 2026 | Autonomía ~7 horas |
+| v1.1 | Upgrade a batería 2000mAh | Mayo 2026 | Autonomía ~10 horas |
+| v1.2 | Pantallas OLED mejoradas | Mayo 2026 | Mejor visualización, sin aumento de consumo |
+ 
 ### Precauciones de Uso
-
+ 
 #### Para Usuarias
-
-1. **Mantener batera cargada**
+ 
+1. **Mantener batería cargada**
    - Cargar noche anterior a evento
    - Indicador visual cuando carga baja (<20%)
-   - Tiempo de carga: ~2 horas
+   - Tiempo de carga completa: 2 horas
+   - Autonomía actual: 10 horas (batería 2000mAh)
+   - En modo pánico: transmite durante 1 hora máximo
 
 2. **Contacto de piel**
-   - Sensor debe estar en contacto directo para MAX30102
-   - Usar en mueca, no sobre ropa
+   - Sensor MAX30102 debe estar en contacto directo con la piel
+   - Usar en muñeca, no sobre ropa
    - Limpiar zona antes de usar
+   - Evitar movimientos excesivos durante lectura de signos vitales
 
 3. **Privacidad**
-   - Informacin solo se transmite cuando presiona pnico
-   - Botn de pnico NO es especialmente visible (discrecin)
-   - Datos histricos almacenados solo 30 das (configurable)
-
+   - Información solo se transmite cuando presiona pánico o se detecta emergencia
+   - Botón de pánico NO es especialmente visible (discreción)
+   - Datos históricos almacenados solo 30 días (configurable)
+   - Transmisión se detiene automáticamente después de 1 hora
+   
 4. **Situaciones de emergencia**
    - Probar dispositivo regularmente (1x por semana)
-   - Tener nmero de emergencia guardado en telfono
-   - Verificar cobertura celular Telcel en zona de operacin
+   - Tener número de emergencia guardado en teléfono
+   - Verificar cobertura celular Telcel en zona de operación
+   - Tener contactos de confianza configurados en el Instituto
 
 #### Para Operadores (Instituto de la Mujer)
 
@@ -1719,13 +1735,13 @@ docker-compose up -d
 
 | Estudiante | Rol | Contribucin |
 |-----------|-----|--------------|
-| **Melanie Santiago Resendiz** (230110616) | Lder Tcnico | Diseo de hardware, sensores, PCB |
+| **Melanie Santiago Resendiz** (230110616) |  Tecnico | Diseño de hardware, sensores, PCB |
 | **Karen Prez Ortiz** (230110326) | Desarrolladora LoRa/GPRS | Configuración de comunicaciones inalámbricas |
-| **Carol Mera Ibarra** (230110264) | Ingeniera de Datos | InfluxDB, Grafana, almacenamiento histrico |
-| **Andrea Jacob Salas** (230110449) | Desarrolladora Node-RED | Dashboard, lgica de alertas, interfaz |
-| **Freyra Wendy Martnez Martnez** (230110434) | Diseadora de Carcasa | Fabricacin 3D, ergonoma, discrecin |
+| **Carol Mera Ibarra** (230110264) | Ingeniera de Datos | InfluxDB, Grafana, almacenamiento historico |
+| **Andrea Jacob Salas** (230110449) | Desarrolladora Node-RED | Dashboard, logica de alertas, interfaz |
+| **Freyra Wendy Martnez Martnez** (230110434) | Diseñadora de Carcasa | Fabricacion 3D |
 
-**Institucin**: Instituto Tecnolgico Superior del Occidente del Estado de Hidalgo  
+**Institucion**: Instituto Tecnolgico Superior del Occidente del Estado de Hidalgo  
 **Grado y Grupo**: 6 "B"  
 **Materia**: Tecnologías Inalámbricas - Tema 1: Estándares de Comunicación Inalámbrica
 
@@ -1768,7 +1784,3 @@ docker-compose up -d
 ---
 
 **Proyecto Integrador - Tecnologías Inalámbricas**
-
-**Última actualización**: 2026-04-01
-**Versión**: 1.0.0
-**Licencia**: MIT
