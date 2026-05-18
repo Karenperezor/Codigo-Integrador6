@@ -268,55 +268,9 @@ El nodo receptor utiliza la **misma configuracin que el emisor**, pero sin los s
 
 ---
 
-### Topologa de Red
+### Topologia de Red
 
-```
-
-  Pulsera Emisora
-  (Heltec ESP32  
-   LoRa v3 +     
-   Sensores)     
-
-         
-      LoRa (868 MHz, LPWAN, WPAN)
-      Rango: ~5 km línea visual
-         
-         
-
- Nodo Receptor   
- (Heltec ESP32   
-  LoRa v3)       
-
-         
-    Serial (UART)
-         
-         
-
-  Gateway GPRS   
-  (LilyGO T-SIM7 
-  + Telcel SIM)  
-
-         
-      GPRS (2G/3G, WWAN)
-      Cobertura: Nacional Telcel
-         
-         
-
-   Internet / Cloud  
-   HiveMQ Broker     
-   (MQTT port 1883)  
-
-         
-    MQTT (JSON payload)
-         
-         
-
-  Servidor Local                  
-   Node-RED (flujos)            
-   InfluxDB (base de datos)     
-   Grafana (dashboards)         
-
-```
+[Topologia de la red](Diagrama.png)
 
 ---
 
