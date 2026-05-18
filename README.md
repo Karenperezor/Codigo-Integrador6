@@ -23,7 +23,7 @@
 - [Tabla de Direccionamiento I2C](#tabla-de-direccionamiento-i2c)
 - [Formato de Datos de Salida](#formato-de-datos-de-salida)
 - [Códigos del Proyecto](#códigos-del-proyecto)
-  - [Nodo Emisor - Version1-TRANSMISOR.ino](#https://github.com/Karenperezor/Codigo-Integrador6/blob/main/Version1-TRANSMISOR.ino)
+  - [Nodo Emisor - Version1-TRANSMISOR.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/Version1-TRANSMISOR.ino)
   - [Nodo Receptor - receptor_Hv2.ino](#nodo-receptor-heltec-esp32-lora-v3)
   - [Gateway Celular - lilygo.ino](#gateway-celular-lilygo-t-sim7000)
 - [Flujo de Datos Completo](#flujo-de-datos-completo)
