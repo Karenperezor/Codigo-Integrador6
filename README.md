@@ -58,6 +58,7 @@
   - [Nodo Emisor — Version1-TRANSMISOR.ino](#nodo-emisor--version1-transmisorino)
   - [Nodo Receptor — receptor_Hv2.ino](#nodo-receptor--receptor_hv2ino)
   - [Gateway Celular — lilygo.ino](#gateway-celular--lilygoino)
+  - [Flujo Node-RED — node-red.json](#flujo-node-red--node-redjson)
 - [Explicación de Configuraciones de Sensores y Tarjetas](#explicación-de-configuraciones-de-sensores-y-tarjetas)
   - [MAX30102 (Sensor Biométrico)](#max30102-sensor-biométrico)
   - [MPU6050 (Acelerómetro de 6 ejes)](#mpu6050-acelerómetro-de-6-ejes)
@@ -238,8 +239,8 @@ Transmitiendo los datos vía **LoRa y GPRS** a la Instancia Gubernamental durant
 ## Tabla de Conexiones
 
 ### Nodo Emisor (Heltec ESP32 LoRa v3)
-[Heltec ESP32 LoRa v3](DIAGRAMA-CONEXIONES.jpeg)
 
+![Tabla de conexiones](DIAGRAMA-CONEXIONES.jpeg)
 
 #### Sensor MAX30102 (I2C)
 
@@ -250,7 +251,7 @@ Transmitiendo los datos vía **LoRa y GPRS** a la Instancia Gubernamental durant
 | VCC | 3.3V |
 | GND | GND |
 
-Referencia visual: [MAX30102 — Datasheet Analog Devices](https://www.analog.com/media/en/technical-documentation/data-sheets/MAX30102.pdf)
+![Módulo MAX30102](https://electropeak.com/learn/wp-content/uploads/2020/12/MAX30102-Module-Arduino-Pinout-768x768.jpg)
 
 #### Acelerómetro MPU6050 (I2C)
 
@@ -262,7 +263,7 @@ Referencia visual: [MAX30102 — Datasheet Analog Devices](https://www.analog.co
 | GND | GND |
 | INT | GPIO 15 |
 
-Referencia visual: [MPU-6050 — Datasheet InvenSense](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf)
+![Acelerómetro MPU6050 (I2C)](https://uelectronics.com/wp-content/uploads/2019/07/AR1032-MAX30102-Sensor-Pulso-Concentracion-Oxigeno-PINOUT_1-768x768.webp)
 
 #### Módulo GPS NEO-6M (UART)
 
@@ -273,7 +274,7 @@ Referencia visual: [MPU-6050 — Datasheet InvenSense](https://invensense.tdk.co
 | VCC | 3.3V |
 | GND | GND |
 
-Referencia visual: [NEO-6M — u-blox Product Page](https://www.u-blox.com/en/product/neo-6-series)
+![Módulo GPS NEO-6M (UART)](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd-7gGzjY6AvZn-i_AcpY97MMVZK8oROerRw&s)
 
 #### Reloj DS1307 (I2C)
 
@@ -285,7 +286,7 @@ Referencia visual: [NEO-6M — u-blox Product Page](https://www.u-blox.com/en/pr
 | GND | GND |
 | BAT | Batería CR2032 |
 
-Referencia visual: [DS1307 — Datasheet Maxim](https://www.analog.com/media/en/technical-documentation/data-sheets/DS1307.pdf)
+![Reloj DS1307](https://http2.mlstatic.com/D_NQ_NP_990661-CBT73204345679_122023-O.webp)
 
 #### Botón de Pánico
 
@@ -294,12 +295,16 @@ Referencia visual: [DS1307 — Datasheet Maxim](https://www.analog.com/media/en/
 | Entrada | GPIO 0 |
 | GND | GND |
 
+![Botón de Pánico](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJZQETrRQBpzej9oFUl5SXSExYzf2HtHaveg&s)
+
 #### Batería LiPo
 
 | Conexión | Puerto Heltec ESP32 |
 |---------|---------------------|
 | +3.7V | Puerto USB-C (integrado) |
 | GND | GND |
+
+![Batería LiPo 2000mAh](https://uelectronics.com/wp-content/uploads/2019/07/AR1069-Bateria-2000mAh-4.webp)
 
 ---
 
@@ -429,8 +434,6 @@ Finalmente, plataformas como **Node-RED**, **Grafana** e **InfluxDB** permiten v
 
 #### Node-RED (Servidor Local)
 
-[FLUJO DE NODE RED](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/node-red.json)
-
 | Parámetro | Valor | Descripción |
 |-----------|-------|-------------|
 | **Ubicación** | Localhost (127.0.0.1) | Servidor local |
@@ -557,6 +560,8 @@ if (aceleracion_magnitude > 2.0) {   // unidades: g
 update_dashboard(BPM, SpO2, acceleration, GPS_location, alert_type);
 ```
 
+[📄 Flujo Node-RED — node-red.json](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/node-red.json)
+
 [↑ Volver al índice](#tabla-de-contenidos)
 
 ---
@@ -597,6 +602,17 @@ update_dashboard(BPM, SpO2, acceleration, GPS_location, alert_type);
 - LED de confirmación visual.
 
 [📄 Gateway Celular — lilygo.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/lilygo.ino)
+
+### 4. Flujo Node-RED — node-red.json
+
+**Características principales:**
+- Suscripción al tópico MQTT `instituto/mujer/alertas` en HiveMQ.
+- Parseado de paquetes JSON con BPM, SpO2, aceleración y coordenadas GPS.
+- Lógica de alertas automáticas por umbrales (SpO2, BPM, caídas).
+- Dashboard con mapa GPS en tiempo real, medidores y gráficas históricas.
+- Almacenamiento en InfluxDB y notificaciones automáticas por WhatsApp.
+
+[📄 Flujo Node-RED — node-red.json](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/node-red.json)
 
 [↑ Volver al índice](#tabla-de-contenidos)
 
