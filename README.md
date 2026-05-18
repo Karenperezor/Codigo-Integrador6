@@ -238,7 +238,7 @@ Transmitiendo los datos vía **LoRa y GPRS** a la Instancia Gubernamental durant
 ## Tabla de Conexiones
 
 ### Nodo Emisor (Heltec ESP32 LoRa v3)
-[Heltec ESP32 LoRa v3](DIAGRAMA-CONEXIONES)
+[Heltec ESP32 LoRa v3](DIAGRAMA-CONEXIONES.jpeg)
 
 
 #### Sensor MAX30102 (I2C)
