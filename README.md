@@ -13,7 +13,20 @@
  **Estado:** Repositorio Público - Acceso abierto para replicación del proyecto
 
 ---
+##  Estudiantes
 
+| Estudiante | Rol | Contribucion |
+|-----------|-----|--------------|
+| **Melanie Santiago Resendiz** (230110616) |  Tecnico | Diseño de hardware, sensores, PCB |
+| **Karen Prez Ortiz** (230110326) | Desarrolladora LoRa/GPRS | Configuración de comunicaciones inalámbricas |
+| **Carol Mera Ibarra** (230110264) | Ingeniera de Datos | InfluxDB, Grafana, almacenamiento historico |
+| **Andrea Jacob Salas** (230110449) | Desarrolladora Node-RED | Dashboard, logica de alertas, interfaz |
+| **Freyra Wendy Martnez Martnez** (230110434) | Diseñadora de Carcasa | Fabricacion 3D |
+
+**Institucion**: Instituto Tecnolgico Superior del Occidente del Estado de Hidalgo  
+**Grado y Grupo**: 6 "B"  
+**Materia**: Tecnologías Inalámbricas - Tema 1: Estándares de Comunicación Inalámbrica
+--- 
 ## Tabla de Contenidos
  
 ## Tabla de Contenidos
@@ -1017,19 +1030,7 @@ docker-compose up -d
 
 ---
 
-##  Estudiantes
 
-| Estudiante | Rol | Contribucin |
-|-----------|-----|--------------|
-| **Melanie Santiago Resendiz** (230110616) |  Tecnico | Diseño de hardware, sensores, PCB |
-| **Karen Prez Ortiz** (230110326) | Desarrolladora LoRa/GPRS | Configuración de comunicaciones inalámbricas |
-| **Carol Mera Ibarra** (230110264) | Ingeniera de Datos | InfluxDB, Grafana, almacenamiento historico |
-| **Andrea Jacob Salas** (230110449) | Desarrolladora Node-RED | Dashboard, logica de alertas, interfaz |
-| **Freyra Wendy Martnez Martnez** (230110434) | Diseñadora de Carcasa | Fabricacion 3D |
-
-**Institucion**: Instituto Tecnolgico Superior del Occidente del Estado de Hidalgo  
-**Grado y Grupo**: 6 "B"  
-**Materia**: Tecnologías Inalámbricas - Tema 1: Estándares de Comunicación Inalámbrica
 
 [ Volver al índice](#tabla-de-contenidos)
 
