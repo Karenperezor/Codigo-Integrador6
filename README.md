@@ -540,6 +540,7 @@ Pulsera Inteligente → LoRa → Receptor → GPRS/MQTT → HiveMQ → Node-RED 
 ```
 
 ### Lgica de Alertas en Node-RED
+[Nodo Emisor - Version1-TRANSMISOR.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/node-red.json)
 
 ```javascript
 // Pseudo-código de la lgica implementada en Node-RED
