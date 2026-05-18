@@ -247,7 +247,7 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | VCC | 3.3V |
 | GND | GND |
 
-![Pinout Sensor MAX30102|200](https://uelectronics.com/wp-content/uploads/2019/07/AR1032-MAX30102-Sensor-Pulso-Concentracion-Oxigeno-PINOUT_1-768x768.webp)
+![Pinout Sensor MAX30102|200](https://lastminuteengineers.com/wp-content/uploads/arduino/MAX30102-Module-Pinout.png-768x768.webp)
 
 
 #### Acelerómetro MPU6050 (I2C)
