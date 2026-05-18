@@ -10,29 +10,30 @@
 ![Badge](https://img.shields.io/badge/Protocol-LoRa%2BGPRS-orange)
 
 **Repositorio GitHub:** [github.com/Karenperezor/Codigo-Integrador6](https://github.com/Karenperezor/Codigo-Integrador6)  
-**Estado:** Repositorio Público - Acceso abierto para replicación del proyecto
+**Estado:** Repositorio Público — Acceso abierto para replicación del proyecto
 
 ---
 
 ## Estudiantes
 
-Estudiante 
-**Melanie Santiago Resendiz** (230110616) 
-**Karen Perez Ortiz** (230110326) 
-**Carol Mera Ibarra** (230110264) 
-**Andrea Jacob Salas** (230110449) 
- **Freyra Wendy Martinez Martinez** (230110434) 
+| Nombre | Número de control |
+|--------|-------------------|
+| **Melanie Santiago Resendiz** | 230110616 |
+| **Karen Pérez Ortiz** | 230110326 |
+| **Carol Mera Ibarra** | 230110264 |
+| **Andrea Jacob Salas** | 230110449 |
+| **Freyra Wendy Martínez Martínez** | 230110434 |
 
-**Institución**: Instituto Tecnológico Superior del Occidente del Estado de Hidalgo  
-**Grado y Grupo**: 6 "B"  
-**Materia**: Tecnologías Inalámbricas - Tema 1: Estándares de Comunicación Inalámbrica
---- 
+**Institución:** Instituto Tecnológico Superior del Occidente del Estado de Hidalgo  
+**Grado y Grupo:** 6° "B"  
+**Materia:** Tecnologías Inalámbricas — Tema 1: Estándares de Comunicación Inalámbrica
 
- 
+---
+
 ## Tabla de Contenidos
 
 - [Introducción](#introducción)
-  - [Contexto del Problema](#contexto-del-problema)
+  - [Planteamiento del Problema](#planteamiento-del-problema)
   - [Arquitectura de Comunicación Inalámbrica](#arquitectura-de-comunicación-inalámbrica)
   - [Característica Diferenciadora: Privacidad Centrada en el Consentimiento](#característica-diferenciadora-privacidad-centrada-en-el-consentimiento)
 - [Justificación](#justificación)
@@ -54,22 +55,30 @@ Estudiante
   - [Diagrama de Capas OSI](#diagrama-de-capas-osi)
   - [Lógica de Alertas en Node-RED](#lógica-de-alertas-en-node-red)
 - [Códigos Comentados del Proyecto](#códigos-comentados-del-proyecto)
-  - [Nodo Emisor - Version1-TRANSMISOR.ino](#nodo-emisor---version1-transmisorino)
-  - [Nodo Receptor - receptor_Hv2.ino](#nodo-receptor---receptor_hv2ino)
-  - [Gateway Celular - lilygo.ino](#gateway-celular---lilygoino)
+  - [Nodo Emisor — Version1-TRANSMISOR.ino](#nodo-emisor--version1-transmisorino)
+  - [Nodo Receptor — receptor_Hv2.ino](#nodo-receptor--receptor_hv2ino)
+  - [Gateway Celular — lilygo.ino](#gateway-celular--lilygoino)
 - [Explicación de Configuraciones de Sensores y Tarjetas](#explicación-de-configuraciones-de-sensores-y-tarjetas)
   - [MAX30102 (Sensor Biométrico)](#max30102-sensor-biométrico)
   - [MPU6050 (Acelerómetro de 6 ejes)](#mpu6050-acelerómetro-de-6-ejes)
   - [NEO-6M (Módulo GPS)](#neo-6m-módulo-gps)
+  - [DS1307 (Reloj en Tiempo Real)](#ds1307-reloj-en-tiempo-real)
+  - [Heltec ESP32 LoRa v3 (Microcontrolador)](#heltec-esp32-lora-v3-microcontrolador)
+  - [LilyGO T-SIM7000 (Gateway GPRS)](#lilygo-t-sim7000-gateway-gprs)
+- [Explicación de Alimentación Móvil y Fija](#explicación-de-alimentación-móvil-y-fija)
+- [Recomendaciones de Mejora y Precauciones de Uso](#recomendaciones-de-mejora-y-precauciones-de-uso)
+- [Instalación y Configuración Rápida](#instalación-y-configuración-rápida)
+- [Bibliografía](#bibliografía)
 
 ---
+
 ## Introducción
 
 Este proyecto implementa un **sistema IoT funcional basado en tecnologías inalámbricas de largo alcance y bajo consumo** para el monitoreo en tiempo real de signos vitales y geolocalización de mujeres en situación de vulnerabilidad. El prototipo opera mediante la integración de nodos sensores y gateways que transmiten datos biométricos desde una pulsera emisora inteligente hacia un servidor central de procesamiento y visualización.
 
-[ Volver al índice](#tabla-de-contenidos)
+[↑ Volver al índice](#tabla-de-contenidos)
 
-### Plantemiento del Problema
+### Planteamiento del Problema
 
 El proyecto aborda directamente la problemática de la **violencia de género en el municipio de Tlahuelilpan, Hidalgo**, donde el **70.1% de las mujeres de 15 años o más han experimentado al menos un incidente de violencia** según datos del INEGI. Esta solución se alinea con el **eje de Seguridad Humana de los PRONACES** (Programas Nacionales Estratégicos).
 
@@ -77,8 +86,8 @@ El proyecto aborda directamente la problemática de la **violencia de género en
 
 El sistema integra dos categorías de tecnologías inalámbricas:
 
-- **LoRa (LPWAN)**: Comunicación de corto a medio alcance entre la pulsera emisora y el gateway receptor
-- **GPRS (WWAN)**: Transmisión de datos hacia el servidor en la nube desde el gateway
+- **LoRa (LPWAN):** Comunicación de corto a medio alcance entre la pulsera emisora y el gateway receptor.
+- **GPRS (WWAN):** Transmisión de datos hacia el servidor en la nube desde el gateway.
 
 Esta combinación garantiza **cobertura robusta en escenarios donde el Wi-Fi es limitado** y proporciona **conectividad sin interrupciones durante emergencias**.
 
@@ -92,20 +101,20 @@ A diferencia de otras soluciones de monitoreo continuo, este prototipo incorpora
 
 ### ¿Por qué este proyecto es necesario?
 
-1. **Violencia de Género**: La violencia contra las mujeres es un problema crítico en México que requiere soluciones tecnológicas accesibles y confiables.
+1. **Violencia de Género:** La violencia contra las mujeres es un problema crítico en México que requiere soluciones tecnológicas accesibles y confiables.
 
-2. **Tecnología Apropiada**: Las tecnologías inalámbricas como LoRa y GPRS permiten:
-   - Monitoreo en tiempo real sin dependencia de Wi-Fi
-   - Operación en zonas con cobertura celular limitada
-   - Bajo consumo energético para dispositivos portátiles
+2. **Tecnología Apropiada:** Las tecnologías inalámbricas como LoRa y GPRS permiten:
+   - Monitoreo en tiempo real sin dependencia de Wi-Fi.
+   - Operación en zonas con cobertura celular limitada.
+   - Bajo consumo energético para dispositivos portátiles.
 
-3. **Beneficiario Directo**: El **Instituto de la Mujer de Tlahuelilpan** requiere herramientas de vanguardia para la protección y seguimiento de sus usuarias con precisión sin precedentes.
+3. **Beneficiario Directo:** El **Instituto de la Mujer de Tlahuelilpan** requiere herramientas de vanguardia para la protección y seguimiento de sus usuarias con precisión sin precedentes.
 
-4. **Aplicación Educativa**: Este desarrollo fortalece la comprensión práctica de los estándares de comunicación inalámbrica (Tema 1, 2 y 3) mediante un caso de uso real y socialmente relevante.
+4. **Aplicación Educativa:** Este desarrollo fortalece la comprensión práctica de los estándares de comunicación inalámbrica (Temas 1, 2 y 3) mediante un caso de uso real y socialmente relevante.
 
-5. **Escalabilidad**: El diseño modular permite escalar la solución a otras instituciones y municipios con problemáticas similares.
+5. **Escalabilidad:** El diseño modular permite escalar la solución a otras instituciones y municipios con problemáticas similares.
 
-[ Volver al índice](#tabla-de-contenidos)
+[↑ Volver al índice](#tabla-de-contenidos)
 
 ---
 
@@ -119,7 +128,7 @@ Diseñar y construir un **prototipo IoT funcional basado en Heltec ESP32 LoRa v3
 - Aceleración en tres ejes (X, Y, Z)
 - Ubicación GPS de la usuaria
 
-Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante una **ventana de una hora activada por una sola pulsación del botón de pánico**, aplicando los estándares de comunicación inalámbrica para garantizar **calidad, confiabilidad y seguridad** de los datos.
+Transmitiendo los datos vía **LoRa y GPRS** a la Instancia Gubernamental durante una **ventana de una hora activada por una sola pulsación del botón de pánico**, aplicando los estándares de comunicación inalámbrica para garantizar **calidad, confiabilidad y seguridad** de los datos.
 
 ### Objetivos Específicos
 
@@ -133,7 +142,8 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 
 5. **Estructurar una base de datos en InfluxDB** vinculada a Grafana para el registro histórico de signos vitales, aceleración y geolocalización.
 
-[ Volver al índice](#tabla-de-contenidos)
+[↑ Volver al índice](#tabla-de-contenidos)
+
 ---
 
 ## Requerimientos de Software y Hardware
@@ -141,8 +151,6 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 ### Hardware
 
 #### Nodo Emisor (Pulsera Inteligente)
-
-
 
 | Componente | Modelo | Función |
 |-----------|--------|---------|
@@ -154,11 +162,7 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | **Batería** | LiPo 3.7V (2000 mAh) | Alimentación del nodo emisor |
 | **Carcasa** | Impresión 3D personalizada | Protección de componentes |
 
-
-
 #### Nodo Receptor y Gateway
-
-
 
 | Componente | Modelo | Función |
 |-----------|--------|---------|
@@ -169,88 +173,84 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 #### Servidor Local
 
 | Componente | Especificación | Función |
-|-----------|--------|---------|
+|-----------|----------------|---------|
 | **Computadora** | x86 / ARM | Alojamiento de servicios |
 | **SO** | Linux / Windows / macOS | Sistema operativo |
 
-
-
-
+---
 
 ### Software
 
 #### En el Nodo Emisor (Arduino IDE con ESP32 Heltec)
 ```
-- RadioLib.h (SX1262 en Heltec)
-- HT_SSD1306Wire (Display OLED)
-- HT_TinyGPS++ (Mdulo GPS NEO-6M)
-- RTClib (RTC DS3231)
-- MPU6050 (Acelermetro)
-- MAX30105 (Sensor biomtrico)
-- heartRate (Algoritmo de deteccin de pulsaciones)
-- HardwareSerial (UART para GPS)
+- RadioLib.h          (SX1262 en Heltec)
+- HT_SSD1306Wire      (Display OLED)
+- HT_TinyGPS++        (Módulo GPS NEO-6M)
+- RTClib              (RTC DS3231)
+- MPU6050             (Acelerómetro)
+- MAX30105            (Sensor biométrico)
+- heartRate           (Algoritmo de detección de pulsaciones)
+- HardwareSerial      (UART para GPS)
 - Lenguaje: C++ (Arduino Sketch)
 ```
 
 #### En el Nodo Receptor (Arduino IDE con ESP32)
 ```
-- RadioLib.h (SX1276 en Heltec)
-- Adafruit_SSD1306 (Display OLED)
-- Adafruit_GFX (Librera grfica)
-- esp_now.h (Comunicación RF)
-- WiFi.h (Inicializar ESP-NOW)
+- RadioLib.h          (SX1276 en Heltec)
+- Adafruit_SSD1306    (Display OLED)
+- Adafruit_GFX        (Librería gráfica)
+- esp_now.h           (Comunicación RF)
+- WiFi.h              (Inicializar ESP-NOW)
 - Lenguaje: C++ (Arduino Sketch)
 ```
 
 #### En el Gateway (Arduino IDE con LilyGO T-SIM7000)
 ```
-- TinyGsmClient.h (Mdulo GPRS SIM7000)
-- PubSubClient.h (Cliente MQTT)
-- WiFi.h (WiFi + ESP-NOW)
-- esp_now.h (Recibir datos RF)
-- HardwareSerial (UART para mdem)
+- TinyGsmClient.h     (Módulo GPRS SIM7000)
+- PubSubClient.h      (Cliente MQTT)
+- WiFi.h              (WiFi + ESP-NOW)
+- esp_now.h           (Recibir datos RF)
+- HardwareSerial      (UART para módem)
 - Lenguaje: C++ (Arduino Sketch)
 ```
 
 #### En el Servidor Local
 ```
-- Node-RED v3.0.0+ (Flujos de procesamiento)
-- InfluxDB v2.0+ (Base de datos de series de tiempo)
-- Grafana v9.0+ (Visualizacin de datos)
-- Broker MQTT: HiveMQ (pblico)
-- Docker (opcional, para contenedores)
+- Node-RED v3.0.0+    (Flujos de procesamiento)
+- InfluxDB v2.0+      (Base de datos de series de tiempo)
+- Grafana v9.0+       (Visualización de datos)
+- Broker MQTT: HiveMQ (público)
+- Docker              (opcional, para contenedores)
 ```
 
 #### Herramientas de Desarrollo
 ```
 - Arduino IDE 2.0+
-- Git & GitHub (versionamiento)
-- Visual Studio Code (edicin de código)
-- Postman (pruebas de API)
+- Git & GitHub        (versionamiento)
+- Visual Studio Code  (edición de código)
+- Postman             (pruebas de API)
 ```
 
-[ Volver al índice](#tabla-de-contenidos)
+[↑ Volver al índice](#tabla-de-contenidos)
 
 ---
 
-##  Tabla de Conexiones
+## Tabla de Conexiones
 
-### Conexiones Eléctricas - Nodo Emisor (Heltec ESP32 LoRa v3)
+### Nodo Emisor (Heltec ESP32 LoRa v3)
 
-![Tabla de conexiones](DIAGRAMA-CONEXIONES.jpeg)
+> **Nota:** Las imágenes de referencia de cada módulo se incluyen en la carpeta `/img` del repositorio. Consulta también los datasheets enlazados en la sección de [Bibliografía](#bibliografía).
 
 #### Sensor MAX30102 (I2C)
+
 | Pin MAX30102 | Pin Heltec ESP32 |
-|------------|-----------------|
+|-------------|-----------------|
 | SDA | GPIO 21 |
 | SCL | GPIO 22 |
 | VCC | 3.3V |
 | GND | GND |
 
-![Módulo GPS NEO-6M (UART)](https://electropeak.com/learn/wp-content/uploads/2020/12/MAX30102-Module-Arduino-Pinout-768x768.jpg)
-
-
-
+Referencia visual: [MAX30102 — Datasheet Analog Devices](https://www.analog.com/media/en/technical-documentation/data-sheets/MAX30102.pdf)
 
 #### Acelerómetro MPU6050 (I2C)
 
@@ -262,7 +262,7 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | GND | GND |
 | INT | GPIO 15 |
 
-![Acelerómetro MPU6050 (I2C)](https://uelectronics.com/wp-content/uploads/2019/07/AR1032-MAX30102-Sensor-Pulso-Concentracion-Oxigeno-PINOUT_1-768x768.webp)
+Referencia visual: [MPU-6050 — Datasheet InvenSense](https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf)
 
 #### Módulo GPS NEO-6M (UART)
 
@@ -273,7 +273,7 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | VCC | 3.3V |
 | GND | GND |
 
-![Módulo GPS NEO-6M (UART)](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQd-7gGzjY6AvZn-i_AcpY97MMVZK8oROerRw&s-768x768.webp)
+Referencia visual: [NEO-6M — u-blox Product Page](https://www.u-blox.com/en/product/neo-6-series)
 
 #### Reloj DS1307 (I2C)
 
@@ -285,8 +285,7 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | GND | GND |
 | BAT | Batería CR2032 |
 
-![Reloj DS1307](https://http2.mlstatic.com/D_NQ_NP_990661-CBT73204345679_122023-O.webp-768x768.webp)
-
+Referencia visual: [DS1307 — Datasheet Maxim](https://www.analog.com/media/en/technical-documentation/data-sheets/DS1307.pdf)
 
 #### Botón de Pánico
 
@@ -295,25 +294,21 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | Entrada | GPIO 0 |
 | GND | GND |
 
-![Botón de Pánico)](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJZQETrRQBpzej9oFUl5SXSExYzf2HtHaveg&s-768x768.webp)
-
 #### Batería LiPo
 
 | Conexión | Puerto Heltec ESP32 |
-|---------|-----------------|
+|---------|---------------------|
 | +3.7V | Puerto USB-C (integrado) |
 | GND | GND |
 
-![Reloj DS1307 (I2C)](https://uelectronics.com/wp-content/uploads/2019/07/AR1069-Bateria-2000mAh-4.webp-768x768.webp)
-
 ---
 
-### Conexiones Eléctricas - Nodo Receptor (Heltec ESP32 LoRa v2)
+### Nodo Receptor (Heltec ESP32 LoRa v2)
 
 #### Display OLED SSD1306 (I2C)
 
 | Pin OLED | Pin Heltec ESP32 |
-|-----------|-----------------|
+|---------|-----------------|
 | SDA | GPIO 4 |
 | SCL | GPIO 15 |
 | RST | GPIO 16 |
@@ -335,13 +330,13 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | +3.2V | Puerto USB-C (integrado) |
 | GND | GND |
 
-> **Nota**: El nodo receptor **no** incluye sensores biométricos (MAX30102, MPU6050, GPS NEO-6M ni DS1307).  
+> **Nota:** El nodo receptor **no** incluye sensores biométricos (MAX30102, MPU6050, GPS NEO-6M ni DS1307).  
 > Su función es exclusivamente recibir tramas LoRa de la pulsera, mostrarlas en el display OLED  
 > y reenviarlas por ESP-NOW al gateway celular (MAC destino: `80:64:6F:FC:0A:50`).
 
 ---
 
-### Conexiones Eléctricas - Gateway LilyGO T-SIM7000 (GPRS)
+### Gateway LilyGO T-SIM7000 (GPRS)
 
 | Componente | Conexión |
 |-----------|---------|
@@ -351,23 +346,24 @@ Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante 
 | Computadora (servidor) | USB Serial |
 
 ---
+
 ### Topología de Red
 
-![Diagrama](diagrama-IOT.png)
+```
+Pulsera Inteligente → LoRa 915 MHz → Nodo Receptor → ESP-NOW → Gateway LilyGO → GPRS/MQTT → HiveMQ → Node-RED / Grafana / InfluxDB
+```
 
-La topología mostrada representa el funcionamiento general del sistema IoT desarrollado para la seguridad de las mujeres, utilizando tecnologías inalámbricas de largo alcance y monitoreo en tiempo real.
+> **Nota:** El diagrama de topología (`diagrama-IOT.png`) se encuentra en la raíz del repositorio. Puedes consultarlo directamente en [GitHub](https://github.com/Karenperezor/Codigo-Integrador6).
 
-El sistema inicia con una **pulsera inteligente basada en Heltec ESP32 LoRa V3**, la cual integra sensores como:
+El sistema inicia con una **pulsera inteligente basada en Heltec ESP32 LoRa V3**, la cual integra los siguientes sensores:
 
-- **MAX30102** para medir BPM y SpO2.
-- **MPU6050** para detectar movimiento y caídas.
-- **GPS NEO-6M** para ubicación en tiempo real.
-- **RTC DS1307** para fecha y hora.
-- **Botón de pánico** para activar alertas.
+- **MAX30102** — Mide BPM y SpO2.
+- **MPU6050** — Detecta movimiento y caídas.
+- **GPS NEO-6M** — Proporciona ubicación en tiempo real.
+- **RTC DS1307** — Registra fecha y hora.
+- **Botón de pánico** — Activa alertas de emergencia.
 
-Cuando la usuaria presiona el botón de pánico, los datos son enviados mediante **LoRa 915 MHz** hacia un nodo receptor.
-
-El **nodo receptor** recibe la información, activa alertas locales mediante buzzer y pantalla OLED, y posteriormente envía los datos a internet usando un **LilyGO T-SIM7000G** con conexión **GPRS**.
+Cuando la usuaria presiona el botón de pánico, los datos son enviados mediante **LoRa 915 MHz** hacia el nodo receptor. Este recibe la información, activa alertas locales mediante buzzer y pantalla OLED, y posteriormente envía los datos a internet usando un **LilyGO T-SIM7000G** con conexión **GPRS**.
 
 La información se publica mediante el protocolo **MQTT** en el broker **HiveMQ**, utilizando el tópico:
 
@@ -377,330 +373,317 @@ instituto/mujer/alertas
 
 Finalmente, plataformas como **Node-RED**, **Grafana** e **InfluxDB** permiten visualizar, almacenar y monitorear los datos en tiempo real, además de generar alertas automáticas por WhatsApp durante situaciones de emergencia.
 
-### Flujo General
+[↑ Volver al índice](#tabla-de-contenidos)
 
-```text
-Pulsera Inteligente → LoRa → Receptor → GPRS/MQTT → HiveMQ → Node-RED / Grafana / InfluxDB
-```
-
-[ Volver al índice](#tabla-de-contenidos)
 ---
 
-
-##  Tabla de Direccionamiento
+## Tabla de Direccionamiento
 
 ### Configuración de Redes Inalámbricas
 
-#### Red LoRa (WPAN - Personal Area Network)
-| Parmetro | Valor | Descripcin |
-|-----------|-------|-------------|
-| **Estndar** | LoRaWAN / LoRa punto a punto | Protocolo inalmbrico LPWAN |
-| **Frecuencia** | 868 MHz (Europa) / 915 MHz (Amrica) | Banda ISM no licenciada |
-| **Ancho de Banda** | 125 kHz - 500 kHz | Configurable en firmware |
-| **Factor de Expansin (SF)** | 7-12 | SF=7: corto alcance, SF=12: largo alcance |
-| **Potencia TX** | +20 dBm mximo | Regulado por regulaciones locales |
-| **Rango** | 5-15 km (línea visual) | Depende del SF y altura |
-| **Topologa** | Punto a punto (gateway de puerta de enlace) | Nodo emisor  Nodo receptor |
-| **Identificadores** | No requiere direccin MAC nica | Comunicación directa en topologa local |
+#### Red LoRa (WPAN — Personal Area Network)
 
-#### Red GPRS (WWAN - Wide Area Network)
-| Parmetro | Valor | Descripcin |
+| Parámetro | Valor | Descripción |
 |-----------|-------|-------------|
-| **Estndar** | GSM/GPRS (2G) y UMTS (3G) | Redes celulares pblicas |
-| **Proveedor** | Telcel Mxico | Operador de telecomunicaciones |
+| **Estándar** | LoRaWAN / LoRa punto a punto | Protocolo inalámbrico LPWAN |
+| **Frecuencia** | 868 MHz (Europa) / 915 MHz (América) | Banda ISM no licenciada |
+| **Ancho de Banda** | 125 kHz – 500 kHz | Configurable en firmware |
+| **Factor de Expansión (SF)** | 7–12 | SF=7: corto alcance, SF=12: largo alcance |
+| **Potencia TX** | +20 dBm máximo | Regulado por normativa local |
+| **Rango** | 5–15 km (línea visual) | Depende del SF y la altura |
+| **Topología** | Punto a punto | Nodo emisor → Nodo receptor |
+| **Identificadores** | No requiere dirección MAC única | Comunicación directa en topología local |
+
+#### Red GPRS (WWAN — Wide Area Network)
+
+| Parámetro | Valor | Descripción |
+|-----------|-------|-------------|
+| **Estándar** | GSM/GPRS (2G) y UMTS (3G) | Redes celulares públicas |
+| **Proveedor** | Telcel México | Operador de telecomunicaciones |
 | **APN** | internet.telcel.com | Access Point Name para datos |
 | **Protocolo** | TCP/IP sobre GPRS | Comunicación de datos en red celular |
-| **Velocidad** | 115200 bps (UART serial) | Configuración del mdulo LilyGO |
-| **Cobertura** | Nacional (Telcel) | Disponibilidad en Mxico |
+| **Velocidad** | 115200 bps (UART serial) | Configuración del módulo LilyGO |
+| **Cobertura** | Nacional (Telcel) | Disponibilidad en México |
 
 #### Red MQTT (Broker HiveMQ)
-| Parmetro | Valor | Descripcin |
+
+| Parámetro | Valor | Descripción |
 |-----------|-------|-------------|
-| **Servidor** | broker.hivemq.com | Broker MQTT pblico |
-| **Puerto** | 1883 | Puerto estndar MQTT (sin TLS) |
-| **Protocolo** | MQTT v3.1.1 | Protocolo de publicacin/suscripcin |
-| **Tpico de Publicacin** | instituto/mujer/alertas | Nombre del canal de comunicacin |
-| **QoS** | 0 | Quality of Service (sin garanta de entrega) |
+| **Servidor** | broker.hivemq.com | Broker MQTT público |
+| **Puerto** | 1883 | Puerto estándar MQTT (sin TLS) |
+| **Protocolo** | MQTT v3.1.1 | Protocolo de publicación/suscripción |
+| **Tópico de Publicación** | `instituto/mujer/alertas` | Canal de comunicación |
+| **QoS** | 0 | Quality of Service (sin garantía de entrega) |
 | **Payload** | JSON | Formato de datos transmitido |
 
 #### Base de Datos InfluxDB (Servidor Local)
-| Parmetro | Valor | Descripcin |
+
+| Parámetro | Valor | Descripción |
 |-----------|-------|-------------|
-| **Ubicacin** | Localhost (127.0.0.1) | Servidor local |
-| **Puerto** | 8086 | Puerto por defecto InfluxDB |
+| **Ubicación** | Localhost (127.0.0.1) | Servidor local |
+| **Puerto** | 8086 | Puerto por defecto de InfluxDB |
 | **Base de Datos** | iot_women_safety | Nombre de la base de datos |
-| **Medicin (Tabla)** | sensor_data | Nombre de la serie de tiempo |
-| **Campos (Columnas)** | BPM, SpO2, AccX, AccY, AccZ, Latitud, Longitud | Parmetros almacenados |
-| **Tags (índices)** | user_id, device_id, timestamp | Claves de bsqueda |
+| **Medición (Tabla)** | sensor_data | Nombre de la serie de tiempo |
+| **Campos (Columnas)** | BPM, SpO2, AccX, AccY, AccZ, Latitud, Longitud | Parámetros almacenados |
+| **Tags (índices)** | user_id, device_id, timestamp | Claves de búsqueda |
 
 #### Node-RED (Servidor Local)
-| Parmetro | Valor | Descripcin |
+
+| Parámetro | Valor | Descripción |
 |-----------|-------|-------------|
-| **Ubicacin** | Localhost (127.0.0.1) | Servidor local |
-| **Puerto HTTP** | 1880 | Interfaz de edicin de flujos |
-| **Suscripcin MQTT** | instituto/mujer/alertas | Tpico de entrada |
+| **Ubicación** | Localhost (127.0.0.1) | Servidor local |
+| **Puerto HTTP** | 1880 | Interfaz de edición de flujos |
+| **Suscripción MQTT** | `instituto/mujer/alertas` | Tópico de entrada |
 | **Nodos principales** | MQTT-in, Function, Switch, Dashboard | Componentes activos |
 
 #### Grafana (Servidor Local)
-| Parmetro | Valor | Descripcin |
+
+| Parámetro | Valor | Descripción |
 |-----------|-------|-------------|
-| **Ubicacin** | Localhost (127.0.0.1) | Servidor local |
+| **Ubicación** | Localhost (127.0.0.1) | Servidor local |
 | **Puerto HTTP** | 3000 | Interfaz de visualización |
 | **Datasource** | InfluxDB (127.0.0.1:8086) | Fuente de datos |
-| **Autenticacin** | admin:admin (por defecto) | Credenciales iniciales |
+| **Autenticación** | admin:admin (por defecto) | Credenciales iniciales |
 
 ---
 
-##  Esquema de Funcionamiento
+## Esquema de Funcionamiento
 
 ### Flujo de Datos Completo
 
 ```
 1. PULSERA (Heltec ESP32 LoRa v3 + Sensores)
-    Captura signos vitales (BPM, SpO2)
-    Captura aceleracin (X, Y, Z)
-    Captura GPS + Timestamp RTC
-    Transmite por LoRa cada 2 segundos en pnico
-   
-    LoRa 915 MHz (alcance 5-15km)
-   
+   ├── Captura signos vitales (BPM, SpO2)
+   ├── Captura aceleración (X, Y, Z)
+   ├── Captura GPS + Timestamp RTC
+   └── Transmite por LoRa cada 2 segundos en modo pánico
+
+        ↓ LoRa 915 MHz (alcance 5–15 km)
+
 2. RECEPTOR (Heltec ESP32 LoRa v3)
-    Recibe trama LoRa
-    Valida integridad
-    Muestra en 6 pantallas OLED
-      Pant 1: ESPERA (con arcos de seal)
-      Pant 2: DATOS/ALERTA (inversin si pnico)
-      Pant 3: DETALLES GPS
-      Pant 4: ESTADSTICAS
-      Pant 5: HISTORIAL
-      Pant 6: SEAL PERDIDA (con timeout)
-    Activa buzzer inteligente (solo pnico)
-    Reenva por ESP-NOW al Gateway
-   
-    ESP-NOW 2.4 GHz (línea recta ~100m)
-   
+   ├── Recibe trama LoRa y valida integridad
+   ├── Muestra en 6 pantallas OLED
+   ├── Activa buzzer inteligente (solo en pánico)
+   └── Reenvía por ESP-NOW al Gateway
+
+        ↓ ESP-NOW 2.4 GHz (línea recta ~100 m)
+
 3. GATEWAY (LilyGO T-SIM7000)
-    Recibe por ESP-NOW
-    Abre conexin GPRS (Telcel)
-    Publica en HiveMQ MQTT
-    LED parpadea en confirmacin
-   
-    GPRS/CAT-M (cobertura nacional Telcel)
-   
+   ├── Recibe por ESP-NOW
+   ├── Abre conexión GPRS (Telcel)
+   ├── Publica en HiveMQ MQTT
+   └── LED parpadea como confirmación visual
+
+        ↓ GPRS/CAT-M (cobertura nacional Telcel)
+
 4. CLOUD (HiveMQ Broker)
-    Almacena en tpico: instituto/mujer/alertas
-    Disponible para Node-RED/Grafana
+   └── Almacena en tópico: instituto/mujer/alertas
+       → Disponible para Node-RED / Grafana
 ```
 
 ### Pantallas del Receptor (6 diferentes)
 
-| # | Nombre | Contenido | Cuando |
-|---|--------|----------|--------|
-| 1 | **ESPERA** | Arcos de seal LoRa animados + barra scanning | Sin datos |
-| 2 | **DATOS/ALERTA** | BPM y aceleracin en cards. Invierte si pnico | Datos normales o pnico |
-| 3 | **DETALLES GPS** | Coordenadas grandes, badge FIX, satlites | Cualquier momento |
-| 4 | **ESTADSTICAS** | 3 cards: RX/ERR/%OK + barra de xito | Cualquier momento |
-| 5 | **HISTORIAL** | ltimos 5 paquetes con alternancia de fondo | Cualquier momento |
-| 6 | **SEAL PERDIDA** | Antena rota, tiempo MM:SS, barra de timeout | >15 segundos sin RX |
+| # | Nombre | Contenido | Cuándo aparece |
+|---|--------|-----------|----------------|
+| 1 | **ESPERA** | Arcos de señal LoRa animados + barra de escaneo | Sin datos recibidos |
+| 2 | **DATOS / ALERTA** | BPM y aceleración en tarjetas; se invierte si hay pánico | Datos normales o pánico |
+| 3 | **DETALLES GPS** | Coordenadas, badge FIX, número de satélites | En cualquier momento |
+| 4 | **ESTADÍSTICAS** | 3 tarjetas: RX / ERR / %OK + barra de éxito | En cualquier momento |
+| 5 | **HISTORIAL** | Últimos 5 paquetes con alternancia de fondo | En cualquier momento |
+| 6 | **SEÑAL PERDIDA** | Ícono de antena rota, tiempo MM:SS, barra de timeout | >15 segundos sin recepción |
 
 ### Diagrama de Capas OSI
 
 ```
+Capa 7 — APLICACIÓN
+         Grafana (visualización), API REST de Node-RED
 
- 7. APLICACIN                                               
-     Grafana (visualización), API REST de Node-RED        
+Capa 6 — PRESENTACIÓN
+         Formato JSON, gráficas en tiempo real
 
- 6. PRESENTACIN                                             
-     Formato JSON, grficas en tiempo real                
+Capa 5 — SESIÓN
+         MQTT (conexión a broker HiveMQ)
 
- 5. SESIN                                                   
-     MQTT (conexin a broker HiveMQ)                      
+Capa 4 — TRANSPORTE
+         TCP (MQTT sobre HiveMQ)
+         UART Serial (Heltec → LilyGO)
 
- 4. TRANSPORTE                                               
-     TCP (MQTT sobre HiveMQ)                              
-     UART Serial (Heltec  LilyGO)                        
+Capa 3 — RED
+         GPRS (LilyGO T-SIM) — WAN
+         Estructura de paquete MQTT
+         Pila TCP/IP
 
- 3. RED                                                      
-     GPRS (LilyGO T-SIM) - WAN                           
-     MQTT packet structure                                
-     TCP/IP stack                                         
+Capa 2 — ENLACE DE DATOS
+         I2C (sensores internos al microcontrolador)
+         LoRa (modulación SX1262, Heltec emisor → receptor)
+         Trama GSM (GPRS sobre Telcel)
 
- 2. ENLACE                                                   
-     I2C (sensores internos al microcontrolador)         
-     LoRa (modulation SX1262, Heltec emisor  receptor) 
-     GSM frame (GPRS sobre Telcel)                       
-
- 1. FSICA                                                   
-     LoRa: 868 MHz, modulacin LORA, 5-15 km rango     
-     GPRS: 2G/3G Telcel, antena celular                 
-     I2C: 3.3V, 100-400 kHz                              
-     UART: 115200 bps, RS232-like levels               
-     GPIO: lgica 3.3V                                   
-
+Capa 1 — FÍSICA
+         LoRa: 915 MHz, modulación LoRa, alcance 5–15 km
+         GPRS: 2G/3G Telcel, antena celular
+         I2C: 3.3V, 100–400 kHz
+         UART: 115200 bps
+         GPIO: lógica 3.3V
 ```
 
-### Lgica de Alertas en Node-RED
-[Nodo Emisor - Version1-TRANSMISOR.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/node-red.json)
+### Lógica de Alertas en Node-RED
 
 ```javascript
-// Pseudo-código de la lgica implementada en Node-RED
+// Pseudocódigo de la lógica implementada en Node-RED
 
 if (SpO2 < 90) {
-    alert_type = "CRTICA";
-    alert_reason = "Oxigenacin baja";
-    severity = "HIGH";
-    action = "Notificar Instituto inmediatamente";
+    alert_type   = "CRÍTICA";
+    alert_reason = "Oxigenación baja";
+    severity     = "HIGH";
+    action       = "Notificar al Instituto inmediatamente";
 }
 
 if (BPM < 50 || BPM > 120) {
-    alert_type = "ADVERTENCIA";
-    alert_reason = "Ritmo cardaco anmalo";
-    severity = "MEDIUM";
+    alert_type   = "ADVERTENCIA";
+    alert_reason = "Ritmo cardíaco anómalo";
+    severity     = "MEDIUM";
 }
 
-if (aceleracion_magnitude > 2g) {
-    alert_type = "CADA DETECTADA";
-    alert_reason = "Cambio abrupto de aceleracin";
-    severity = "HIGH";
-    action = "Solicitar confirmacin de usuaria o asistencia";
+if (aceleracion_magnitude > 2.0) {   // unidades: g
+    alert_type   = "CAÍDA DETECTADA";
+    alert_reason = "Cambio abrupto de aceleración";
+    severity     = "HIGH";
+    action       = "Solicitar confirmación de usuaria o asistencia";
 }
 
 // Enviar a Grafana con timestamp
 update_dashboard(BPM, SpO2, acceleration, GPS_location, alert_type);
 ```
 
-[ Volver al índice](#tabla-de-contenidos)
+[↑ Volver al índice](#tabla-de-contenidos)
 
 ---
 
-##  Códigos Comentados del Proyecto
+## Códigos Comentados del Proyecto
 
-### 1. Código del Nodo Emisor - PULSERA (Heltec ESP32 LoRa v3)
+### 1. Código del Nodo Emisor — PULSERA (Heltec ESP32 LoRa v3)
 
-**Caractersticas principales:**
--  Detecta automticamente emergencias (cadas > 3.5g, forcejeo > 2.0g)
--  Monitoreo de signos vitales (BPM, SpO2) con MAX30102
--  Geolocalizacin GPS con marca de tiempo RTC
--  Transmisin LoRa cada 2 segundos durante pnico
--  Pantalla OLED con interfaz visual mejorada
--  Gestin inteligente de mltiples buses I2C
+**Características principales:**
+- Detecta automáticamente emergencias (caídas > 3.5g, forcejeo > 2.0g).
+- Monitoreo de signos vitales (BPM, SpO2) con MAX30102.
+- Geolocalización GPS con marca de tiempo RTC.
+- Transmisión LoRa cada 2 segundos durante el modo pánico.
+- Pantalla OLED con interfaz visual mejorada.
+- Gestión inteligente de múltiples buses I2C.
 
-[Nodo Emisor - Version1-TRANSMISOR.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/Version1-TRANSMISOR.ino)
+[📄 Nodo Emisor — Version1-TRANSMISOR.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/Version1-TRANSMISOR.ino)
 
 ### 2. Código del Nodo Receptor LoRa (Heltec ESP32 LoRa v3)
 
-**Caractersticas principales:**
--  Recibe datos LoRa de la pulsera
--  Reenva por ESP-NOW al Gateway celular
--  6 pantallas OLED con interfaz mejorada
--  Deteccin automtica de prdida de seal
--  Buzzer inteligente (solo en pnico)
--  LED indicador de actividad
+**Características principales:**
+- Recibe datos LoRa de la pulsera.
+- Reenvía por ESP-NOW al gateway celular.
+- 6 pantallas OLED con interfaz mejorada.
+- Detección automática de pérdida de señal.
+- Buzzer inteligente (solo en modo pánico).
+- LED indicador de actividad.
 
-[Nodo Receptor - receptor_Hv2.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/receptor_Hv2.ino)
+[📄 Nodo Receptor — receptor_Hv2.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/receptor_Hv2.ino)
 
 ### 3. Código del Gateway GPRS (LilyGO T-SIM7000 + ESP-NOW)
 
-Archivo: Version1-TRANSMISOR.ino
+**Características principales:**
+- Recibe datos por **ESP-NOW** del receptor LoRa.
+- Conecta a la red celular Telcel (GPRS/CAT-M).
+- Publica en HiveMQ MQTT sin intermediarios.
+- Reconexión automática de GPRS y MQTT.
+- LED de confirmación visual.
 
-**Caractersticas principales:**
--  Recibe datos por **ESP-NOW** del receptor LoRa
--  Conecta a red celular Telcel (GPRS/CAT-M)
--  Publica a HiveMQ MQTT sin intermediarios
--  Reconexin automtica GPRS y MQTT
--  LED de confirmacin visual
+[📄 Gateway Celular — lilygo.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/lilygo.ino)
 
-[Gateway Celular - lilygo.ino](https://github.com/Karenperezor/Codigo-Integrador6/blob/main/lilygo.ino)
-
-
-[ Volver al índice](#tabla-de-contenidos)
+[↑ Volver al índice](#tabla-de-contenidos)
 
 ---
 
-##  Explicacin de Configuraciones de Sensores y Tarjetas
+## Explicación de Configuraciones de Sensores y Tarjetas
 
-### MAX30102 (Sensor Biomtrico)
+### MAX30102 (Sensor Biométrico)
 
-**Funcin**: Mide ritmo cardaco (BPM) y saturacin de oxgeno (SpO2)
+**Función:** Mide ritmo cardíaco (BPM) y saturación de oxígeno (SpO2).
 
-**Especificaciones**:
-- Protocolo: I2C (direccin: 0x57)
-- Voltaje: 1.8V - 5.5V (se usa 3.3V)
-- Corriente: 11mA tpico
-- Precisin BPM: 5 bpm
-- Precisin SpO2: 2%
-- Rango de luz: Rojo (660nm) e Infrarrojo (880nm)
+**Especificaciones:**
+- Protocolo: I2C (dirección: 0x57)
+- Voltaje: 1.8V – 5.5V (se usa 3.3V)
+- Corriente: 11 mA típico
+- Precisión BPM: ±5 bpm
+- Precisión SpO2: ±2%
+- Longitudes de onda: Rojo (660 nm) e Infrarrojo (880 nm)
 
-**Configuración en código**:
+**Configuración en código:**
 ```cpp
 particleSensor.setup(
-    25,    // LED brightness (0-255)
-    2,     // Sample averaging
-    100,   // Mode: 0=HR, 1=SpO2, 2=Multi-LED (HR+SpO2)
-    25,    // Sample rate
-    500,   // Pulse width (us)
-    100    // ADC resolution (bits)
+    25,    // Brillo del LED (0–255)
+    2,     // Promedio de muestras
+    2,     // Modo: 0=HR, 1=SpO2, 2=Multi-LED (HR+SpO2)
+    100,   // Tasa de muestreo
+    411,   // Ancho de pulso (µs)
+    4096   // Resolución ADC
 );
 ```
 
-**Puntos crticos**:
-- Requiere contacto directo de la piel
-- Sensible a luz ambiental (proteger con carcasa oscura)
-- Necesita calibracin inicial con lecturas conocidas
-- Tiempo de estabilizacin: 10-20 segundos
+**Puntos críticos:**
+- Requiere contacto directo con la piel.
+- Sensible a luz ambiental (proteger con carcasa oscura).
+- Necesita calibración inicial con lecturas conocidas.
+- Tiempo de estabilización: 10–20 segundos.
 
 ---
 
-### MPU6050 (Acelermetro de 6 ejes)
+### MPU6050 (Acelerómetro de 6 ejes)
 
-**Funcin**: Mide aceleracin en 3 ejes (X, Y, Z) y rotacin angular
+**Función:** Mide aceleración en 3 ejes (X, Y, Z) y rotación angular.
 
-**Especificaciones**:
-- Protocolo: I2C (direccin: 0x68 o 0x69)
-- Voltaje: 3.3V - 5V (se usa 3.3V)
-- Corriente: 3.9mA tpico
-- Rango aceleracin: 2g, 4g, 8g, 16g (configurable)
-- Rango giroscopio: 250/s a 2000/s
+**Especificaciones:**
+- Protocolo: I2C (dirección: 0x68 o 0x69)
+- Voltaje: 3.3V – 5V (se usa 3.3V)
+- Corriente: 3.9 mA típico
+- Rango de aceleración: ±2g, ±4g, ±8g, ±16g (configurable)
+- Rango de giroscopio: 250°/s a 2000°/s
 - Resolución: 16 bits
 
-**Configuración en código**:
+**Configuración en código:**
 ```cpp
 mpu.initialize();
-mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_16);  // 16g
-mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_2000);  // 2000/s
-mpu.setDLPFMode(MPU6050_DLPF_BW_184);             // Filtro 184Hz
+mpu.setFullScaleAccelRange(MPU6050_ACCEL_FS_16);  // ±16g
+mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_2000);  // ±2000°/s
+mpu.setDLPFMode(MPU6050_DLPF_BW_184);             // Filtro 184 Hz
 ```
 
-**Deteccin de Cadas**:
+**Detección de caídas:**
 ```cpp
 float magnitude = sqrt(ax*ax + ay*ay + az*az);
-if (magnitude > 2.0g) {
-    // CADA DETECTADA
+if (magnitude > 2.0) {   // Umbral en g
+    // CAÍDA DETECTADA
 }
 ```
 
-**Calibracin**:
-- Colocar sobre superficie plana
-- Ejecutar setAccelOffsets() con tablero horizontal
-- Acelmetro debe leer (0, 0, 1g) en reposo
+**Calibración:**
+- Colocar el módulo sobre una superficie plana.
+- Ejecutar `setAccelOffsets()` con el dispositivo horizontal.
+- El acelerómetro debe leer (0, 0, 1g) en reposo.
 
 ---
 
-### NEO-6M (Mdulo GPS)
+### NEO-6M (Módulo GPS)
 
-**Funcin**: Proporciona geolocalización con coordenadas GPS
+**Función:** Proporciona geolocalización con coordenadas GPS.
 
-**Especificaciones**:
+**Especificaciones:**
 - Protocolo: UART serial (9600 bps por defecto)
-- Voltaje: 3.3V - 5V (se usa 3.3V)
-- Corriente: 45mA tpico
-- Precisin: 2.5 metros (tpico)
-- Tiempo de adquisicin:
+- Voltaje: 3.3V – 5V (se usa 3.3V)
+- Corriente: 45 mA típico
+- Precisión: 2.5 metros (típico)
+- Tiempo de adquisición:
   - Hot start: ~1 segundo
   - Cold start: ~30 segundos
-- Frecuencia de actualización: 1-10 Hz
+- Frecuencia de actualización: 1–10 Hz
 
-**Configuración en código**:
+**Configuración en código:**
 ```cpp
 Serial2.begin(9600, SERIAL_8N1, GPS_RX, GPS_TX);
 TinyGPSPlus gps;
@@ -709,39 +692,38 @@ void loop() {
     while (Serial2.available() > 0) {
         gps.encode(Serial2.read());
     }
-    
+
     if (gps.location.isValid()) {
-        latitude = gps.location.lat();
+        latitude  = gps.location.lat();
         longitude = gps.location.lng();
     }
 }
 ```
 
-**Informacin NMEA disponible**:
-- GGA: Posicin global (lat, lon, altitud)
-- GSA: Dilucin de precisin
-- GSV: Satlites visibles
-- RMC: Datos mnimos + velocidad
+**Tramas NMEA disponibles:**
+- `GGA` — Posición global (lat, lon, altitud)
+- `GSA` — Dilución de precisión
+- `GSV` — Satélites visibles
+- `RMC` — Datos mínimos + velocidad
 
-**Mejoras de precisin**:
-- Aguardar a que tenga mnimo 4 satlites (en gps.satellites.isValid())
-- Usar DGPS si hay base cercana (no implementado en este proyecto)
-- Promediar 5-10 lecturas para ubicacin crtica
+**Mejoras de precisión:**
+- Esperar al menos 4 satélites (`gps.satellites.isValid()`).
+- Promediar 5–10 lecturas para ubicación crítica.
 
 ---
 
 ### DS1307 (Reloj en Tiempo Real)
 
-**Funcin**: Proporciona timestamp independiente, incluso sin seal GPS
+**Función:** Proporciona timestamp independiente, incluso sin señal GPS.
 
-**Especificaciones**:
-- Protocolo: I2C (direccin: 0x68)
-- Voltaje: 4.5V - 5.5V (se usa 3.3V con resistencias pull-up)
-- Batera: CR2032 (3V, interna)
-- Precisin: 2 minutos por mes tpico
-- Corriente: 500A con batera
+**Especificaciones:**
+- Protocolo: I2C (dirección: 0x68)
+- Voltaje: 4.5V – 5.5V (se usa 3.3V con resistencias pull-up)
+- Batería: CR2032 (3V, interna)
+- Precisión: ±2 minutos por mes típico
+- Corriente: 500 µA con batería
 
-**Configuración en código**:
+**Configuración en código:**
 ```cpp
 #include <RTClib.h>
 
@@ -752,7 +734,7 @@ void setup() {
         Serial.println("RTC no encontrado");
     }
     if (!rtc.isrunning()) {
-        // Ajustar a hora actual del compilador
+        // Ajustar a la hora del compilador
         rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     }
 }
@@ -765,167 +747,163 @@ void read_timestamp() {
 }
 ```
 
-**Ventajas sobre GPS para timestamp**:
-- No requiere adquisicin satlital
-- Ms rpido
-- Permite timestamping incluso en zonas sin cobertura GPS
+**Ventajas sobre GPS para timestamp:**
+- No requiere adquisición satelital.
+- Respuesta más rápida.
+- Permite timestamping en zonas sin cobertura GPS.
 
-**Limitacin**: Requiere sincronizacin inicial y ajuste peridico
+**Limitación:** Requiere sincronización inicial y ajuste periódico.
 
 ---
 
 ### Heltec ESP32 LoRa v3 (Microcontrolador)
 
-**Funcin**: Procesamiento central, radio LoRa integrado, pantalla OLED
+**Función:** Procesamiento central, radio LoRa integrado y pantalla OLED.
 
-**Especificaciones**:
-- Procesador: Dual-core Xtensa 32-bit @ 240MHz
+**Especificaciones:**
+- Procesador: Dual-core Xtensa 32-bit @ 240 MHz
 - RAM: 520 KB SRAM
 - Flash: 4 MB
 - Radio LoRa: SX1262 (integrado)
-- Pantalla: OLED 12864 pixels
-- Puerto USB: Serial para programacin
-- Pines GPIO: 36 (multipropsito)
-- ADC: 12-bit, 18 canales
+- Pantalla: OLED 128×64 píxeles
+- Puerto USB: Serial para programación
+- Pines GPIO: 36 (multipropósito)
+- ADC: 12 bits, 18 canales
 - I2C: 2 buses disponibles
 - UART: 3 puertos seriales
-- SPI: Disponible para expansin
 
-**Configuración de Pines LoRa (Heltec)**:
+**Configuración de pines LoRa:**
 ```
-NSS  -> GPIO 8
-MOSI -> GPIO 10
-MISO -> GPIO 9
-SCK  -> GPIO 11
-RST  -> GPIO 12
-DIO0 -> GPIO 13
+NSS  → GPIO 8
+MOSI → GPIO 10
+MISO → GPIO 9
+SCK  → GPIO 11
+RST  → GPIO 12
+DIO0 → GPIO 13
 ```
 
-**Ventajas**:
-- Radio LoRa nativo (no requiere expansin)
-- Display integrado para debugging
-- Batera USB integrada
-- Diseo de bajo consumo
+**Ventajas:**
+- Radio LoRa nativo (no requiere expansión).
+- Display integrado para depuración.
+- Cargador de batería USB integrado.
+- Diseño de bajo consumo.
 
 ---
 
 ### LilyGO T-SIM7000 (Gateway GPRS)
 
-**Funcin**: Mdulo GPRS para transmisin de datos a travs de red celular
+**Función:** Módulo GPRS para transmisión de datos a través de red celular.
 
-**Especificaciones**:
-- Mdulo celular: SIM7000
+**Especificaciones:**
+- Módulo celular: SIM7000
 - Bandas soportadas: 2G/3G GSM/GPRS/UMTS
-- Voltaje: 3.7V - 4.2V (batera integrada)
-- Corriente: 50mA en transmisin
-- Antena: Integrada PCB
-- Puertos:
-  - Ranura SIM para tarjeta nano-SIM
-  - UART para comunicacin con MCU
-  - USB para programacin/depuracin
+- Voltaje: 3.7V – 4.2V (batería integrada)
+- Corriente: ~50 mA en transmisión
+- Antena: Integrada en PCB
+- Puertos: ranura nano-SIM, UART, USB
 
-**Configuración APN para Telcel (Mxico)**:
+**Configuración APN para Telcel (México):**
 ```
-APN: internet.telcel.com
-Usuario: telcel
-Contrasea: telcel
-Protocolo: GPRS
+APN:          internet.telcel.com
+Usuario:      telcel
+Contraseña:   telcel
+Protocolo:    GPRS
 Velocidad UART: 115200 bps
 ```
 
-**Secuencia de conexin**:
+**Secuencia de conexión:**
+```
 1. Inicializar puerto serial (115200 bps)
 2. Enviar comando AT
 3. Configurar APN: AT+SAPBR=3,1,"APN","internet.telcel.com"
-4. Activar conexin GPRS: AT+SAPBR=1,1
-5. Conectar a servidor TCP: AT+HTTPPARA="URL","mqtt://servidor:puerto"
+4. Activar conexión GPRS: AT+SAPBR=1,1
+5. Conectar al servidor TCP/MQTT
+```
 
-**Comandos AT tiles**:
+**Comandos AT útiles:**
 ```
-AT                          // Prueba de comunicacin
-AT+CSQ                      // Verificar nivel de seal
-AT+COPS?                    // Operador actual
-AT+CREG?                    // Estado de registro en red
-AT+CGNSINF                  // Informacin GPS (si est disponible)
+AT            → Prueba de comunicación
+AT+CSQ        → Verificar nivel de señal
+AT+COPS?      → Operador actual
+AT+CREG?      → Estado de registro en red
+AT+CGNSINF    → Información GPS (si disponible)
 ```
+
+[↑ Volver al índice](#tabla-de-contenidos)
 
 ---
 
-##  Explicacin de Alimentación Mvil y Fija
+## Explicación de Alimentación Móvil y Fija
 
-### Alimentación Mvil (Batera LiPo)
+### Alimentación Móvil (Batería LiPo)
 
-**Batera utilizada**: LiPo 4.2V (3000-5000 mAh)
+**Batería utilizada:** LiPo 3.7V / 2000 mAh
 
-**Caractersticas**:
-- **Voltaje nominal**: 3.7V (cargada: 4.2V)
-- **Capacidad**: 3000-5000 mAh tpico
-- **Qumica**: Polmero de Litio
-- **Ciclos de carga**: 300-500 tpicos
-- **Peso**: ~50g
-- **Tamao**: 50308 mm aprox.
-- **Connector**: JST-PH 2.0mm (estndar)
+**Características:**
+- Voltaje nominal: 3.7V (cargada: 4.2V)
+- Capacidad: 2000 mAh
+- Química: Polímero de Litio
+- Ciclos de carga: 300–500 típicos
+- Conector: JST-PH 2.0 mm (estándar)
 
-**Consumo estimado del sistema**:
+**Consumo estimado del sistema:**
 
 | Componente | Estado | Corriente |
 |-----------|--------|-----------|
-| Heltec ESP32 (CPU) | Activo | 80 mA |
-| Heltec ESP32 (Sleep) | Reposo | 10 A |
-| Radio LoRa TX | Transmisin | 100 mA |
-| Radio LoRa RX | Recepcin | 40 mA |
+| Heltec ESP32 (CPU activo) | Activo | 80 mA |
+| Heltec ESP32 (deep sleep) | Reposo | 10 µA |
+| Radio LoRa TX | Transmisión | 100 mA |
+| Radio LoRa RX | Recepción | 40 mA |
 | MAX30102 | Activo | 11 mA |
 | MPU6050 | Activo | 3.9 mA |
 | GPS NEO-6M | Activo | 45 mA |
 | DS1307 | Activo | 0.5 mA |
 | Display OLED | Activo | 15 mA |
 
-**Consumo total en modo pnico**:
-- Lectura sensores: ~60 mA
-- Transmisin LoRa: ~100 mA
-- Promedio durante ventana de 1 hora: ~70 mA
+**Consumo en modo pánico:**
+- Lectura de sensores: ~60 mA
+- Transmisión LoRa: ~100 mA
+- Promedio durante la ventana de 1 hora: ~70 mA
 
-**Autonoma**:
-- Capacidad: 4000 mAh
-- Consumo: 70 mA
-- **Autonoma: 4000  70 = ~57 horas en transmisin continua**
-- **Autonoma en modo pnico (1 hora)**: Ms que suficiente
+**Autonomía estimada:**
 
-**Estrategias de ahorro de energa** (implementadas):
-1. Modo sleep entre lecturas
-2. Reducir frecuencia de lectura GPS (30 segundos)
-3. Apagar sensores no crticos cuando no hay pnico
-4. Display OLED solo en modo pnico
+| Batería | Consumo promedio | Autonomía total |
+|---------|-----------------|-----------------|
+| 2000 mAh | 70 mA | ~28 horas en transmisión continua |
+
+La ventana de pánico de 1 hora está bien cubierta por la capacidad de la batería.
+
+**Estrategias de ahorro de energía implementadas:**
+1. Modo sleep entre lecturas.
+2. Reducción de frecuencia de lectura GPS (cada 30 segundos).
+3. Apagado de sensores no críticos fuera del modo pánico.
+4. Display OLED activo solo en modo pánico.
 
 ---
 
 ### Alimentación Fija (Servidor Local)
 
-**Equipamiento**: Computadora, router, hub USB
+**Equipamiento:** Computadora, router, hub USB.
 
-**Requisitos**:
-- **Alimentación**: 110V/220V AC según regin (Mxico: 110V)
-- **Corriente tpica**: 200-500 mA (laptop) + 50mA (router)
-- **Fuente recomendada**: 500W mnimo
-- **UPS (opcional)**: Para proteger contra cadas de energa
+**Requisitos:**
+- Alimentación: 110V AC (México)
+- Fuente recomendada: mínimo 500W
+- UPS (opcional): para proteger contra cortes de energía.
 
-**Consumo de servicios**:
+**Consumo de servicios:**
 
-| Servicio | Proceso | Memoria | CPU |
-|---------|---------|---------|-----|
-| Node-RED | node-red | 150-300 MB | 5-15% |
-| InfluxDB | influxd | 100-200 MB | 10-20% |
-| Grafana | grafana-server | 200-400 MB | 3-10% |
-| Broker MQTT (local) | mosquitto | 20-50 MB | 1-5% |
+| Servicio | Memoria | CPU estimado |
+|---------|---------|-------------|
+| Node-RED | 150–300 MB | 5–15% |
+| InfluxDB | 100–200 MB | 10–20% |
+| Grafana | 200–400 MB | 3–10% |
+| Broker MQTT (local) | 20–50 MB | 1–5% |
 
-**Total estimado**:
-- Memoria: ~500-1000 MB
-- CPU: ~25-50%
-- **Computadora recomendada**: Mnimo Intel i3/AMD Ryzen 3, 4GB RAM, SSD 256GB
+**Equipo mínimo recomendado:** Intel i3 / AMD Ryzen 3, 4 GB RAM, SSD 256 GB.
 
-**Instalación recomendada** (Linux Ubuntu 20.04+):
+**Instalación recomendada (Linux Ubuntu 20.04+):**
 ```bash
-# Docker (más eficiente)
+# Levantar todos los servicios con Docker
 docker run -d -p 1883:1883 eclipse-mosquitto
 docker run -d -p 8086:8086 influxdb
 docker run -d -p 3000:3000 grafana/grafana
@@ -935,121 +913,121 @@ docker run -d -p 1880:1880 nodered/node-red
 ---
 
 ## Recomendaciones de Mejora y Precauciones de Uso
- 
+
 ### Mejoras Técnicas Identificadas
- 
+
 | Área | Limitación Actual | Propuesta de Solución | Impacto |
 |-----|------------------|----------------------|---------|
-| **Consumo Energético** | Batería dura ~10 horas (2000mAh) | Implementar deep sleep, GPS bajo demanda, BLE de respaldo | Extender a 24+ horas |
-| **Tamaño del Dispositivo** | Pulsera muy grande (actual ~80x60mm) | Rediseñar PCB a 40x40mm, integrar componentes | Mejor discreción, aceptación usuario |
-| **Redundancia** | Una sola ruta (LoRa+GPRS) | Agregar Bluetooth BLE como fallback | Funcionar sin cobertura celular |
-| **Seguridad MQTT** | Broker público sin autenticación | Migrar a broker privado con TLS+tokens | Proteger privacidad de datos |
-| **Monitoreo Remoto** | Solo local | Implementar VPN segura para acceso remoto | Operadores pueden monitorear desde cualquier lugar |
+| **Consumo Energético** | Batería de 2000 mAh (~28 h) | Implementar deep sleep, GPS bajo demanda, BLE de respaldo | Extender a 48+ horas |
+| **Tamaño del Dispositivo** | Pulsera grande (~80×60 mm) | Rediseñar PCB a 40×40 mm, integrar componentes SMD | Mejor discreción y aceptación |
+| **Redundancia** | Una sola ruta (LoRa + GPRS) | Agregar Bluetooth BLE como respaldo | Funcionar sin cobertura celular |
+| **Seguridad MQTT** | Broker público sin autenticación | Migrar a broker privado con TLS + tokens | Proteger privacidad de datos |
+| **Monitoreo Remoto** | Solo local | Implementar VPN segura para acceso remoto | Operadores monitoreando desde cualquier lugar |
 | **Precisión GPS** | 2.5 metros | Implementar correcciones DGPS/RTCM | Ubicación más precisa |
-| **Gestión de Alertas** | Manual | Dashboard automático  | Respuesta más rápida |
- 
+| **Gestión de Alertas** | Manual | Dashboard automático con protocolos de respuesta | Respuesta más rápida |
+
 ### Historial de Mejoras Implementadas
- 
+
 | Versión | Cambio | Fecha | Efecto |
 |---------|--------|-------|--------|
-| v1.0 | Batería original 1000mAh | Marzo 2026 | Autonomía ~7 horas |
-| v1.1 | Upgrade a batería 2000mAh | Mayo 2026 | Autonomía ~10 horas |
-| v1.2 | Pantallas OLED mejoradas | Mayo 2026 | Mejor visualización, sin aumento de consumo |
- 
+| v1.0 | Batería original de 1000 mAh | Marzo 2026 | Autonomía ~7 horas |
+| v1.1 | Actualización a batería de 2000 mAh | Mayo 2026 | Autonomía ~28 horas |
+| v1.2 | Pantallas OLED mejoradas | Mayo 2026 | Mejor visualización sin aumento de consumo |
+
 ### Precauciones de Uso
- 
+
 #### Para Usuarias
- 
-1. **Mantener batería cargada**
-   - Cargar noche anterior a evento
-   - Indicador visual cuando carga baja (<20%)
-   - Tiempo de carga completa: 2 horas
-   - Autonomía actual: 10 horas (batería 2000mAh)
-   - En modo pánico: transmite durante 1 hora máximo
 
-2. **Contacto de piel**
-   - Sensor MAX30102 debe estar en contacto directo con la piel
-   - Usar en muñeca, no sobre ropa
-   - Limpiar zona antes de usar
-   - Evitar movimientos excesivos durante lectura de signos vitales
+1. **Mantener la batería cargada:**
+   - Cargar la noche anterior a cualquier evento.
+   - Indicador visual cuando la carga es baja (<20%).
+   - Tiempo de carga completa: ~2 horas.
+   - En modo pánico: transmite durante 1 hora máximo.
 
-3. **Privacidad**
-   - Información solo se transmite cuando presiona pánico o se detecta emergencia
-   - Botón de pánico NO es especialmente visible (discreción)
-   - Datos históricos almacenados solo 30 días (configurable)
-   - Transmisión se detiene automáticamente después de 1 hora
+2. **Contacto con la piel:**
+   - El sensor MAX30102 debe estar en contacto directo con la piel.
+   - Usar en la muñeca, nunca sobre ropa.
+   - Limpiar la zona antes de usar.
+   - Evitar movimientos excesivos durante la lectura de signos vitales.
 
-4. **Situaciones de emergencia**
-   - Probar dispositivo regularmente (1x por semana)
-   - Tener número de emergencia guardado en teléfono
-   - Verificar cobertura celular Telcel en zona de operación
-   - Tener contactos de confianza configurados en el Instituto
+3. **Privacidad:**
+   - La información solo se transmite cuando se presiona el botón de pánico o se detecta una emergencia automática.
+   - El botón de pánico no es visualmente obvio (diseño discreto).
+   - Los datos históricos se almacenan solo 30 días (configurable).
+   - La transmisión se detiene automáticamente después de 1 hora.
+
+4. **Situaciones de emergencia:**
+   - Probar el dispositivo regularmente (al menos una vez por semana).
+   - Verificar cobertura celular Telcel en la zona de operación.
+   - Tener contactos de confianza configurados en el Instituto.
 
 #### Para Operadores (Instituto de la Mujer)
 
-1. **Capacitacin requerida**
-   - Interpretacin de datos biométricos
-   - Diferencias entre alertas (crtica vs. advertencia)
-   - Protocolo de respuesta a cadas detectadas
+1. **Capacitación requerida:**
+   - Interpretación de datos biométricos.
+   - Diferencias entre tipos de alerta (crítica vs. advertencia).
+   - Protocolo de respuesta ante caídas detectadas.
 
-2. **Mantenimiento de infraestructura**
-   - Servidor debe estar activo 24/7
-   - Copias de seguridad diarias de InfluxDB
-   - Revisin de logs de errores (MQTT, Node-RED)
+2. **Mantenimiento de infraestructura:**
+   - El servidor debe estar activo 24/7.
+   - Copias de seguridad diarias de InfluxDB.
+   - Revisión periódica de logs de errores (MQTT, Node-RED).
 
-3. **Conformidad legal**
-   - GDPR/LOPD: Datos personales almacenados < 30 das
-   - Consentimiento de usuaria para transmisin
-   - Registro de accesos a datos
+3. **Conformidad legal:**
+   - Datos personales almacenados < 30 días.
+   - Consentimiento explícito de la usuaria para la transmisión.
+   - Registro de accesos a datos.
 
-4. **Escalabilidad**
-   - Por cada 100 usuarias adicionales: +1GB RAM servidor
-   - Considerar replicación de servicios (clustering)
-   - Load-balancer si se usan mltiples gateways
+4. **Escalabilidad:**
+   - Por cada 100 usuarias adicionales: +1 GB RAM en el servidor.
+   - Considerar replicación de servicios si se supera esta cifra.
 
-#### Para Desarrolladores (Mantenimiento futuro)
+#### Para Desarrolladores (Mantenimiento Futuro)
 
-1. **Actualizaciones de firmware**
-   - Usar OTA (Over-The-Air) para ESP32
-   - Probar en banco de pruebas antes de desplegar
-   - Mantener respaldo de versin anterior
+1. **Actualizaciones de firmware:**
+   - Usar OTA (Over-The-Air) para ESP32.
+   - Probar en banco de pruebas antes de desplegar.
+   - Mantener respaldo de la versión anterior.
 
-2. **Monitoreo de sensores**
-   - MAX30102: Verificar calibracin c/ 1000 ciclos
-   - MPU6050: Revisar offsets trimestralmente
-   - GPS: Verificar almanaque de satlites
+2. **Monitoreo de sensores:**
+   - MAX30102: verificar calibración cada 1000 ciclos.
+   - MPU6050: revisar offsets trimestralmente.
+   - GPS: verificar almanaque de satélites periódicamente.
 
-3. **Seguridad**
-   - Cambiar contraseas por defecto de Grafana/InfluxDB
-   - Implementar HTTPS en Node-RED
-   - Auditar acceso a broker MQTT
+3. **Seguridad:**
+   - Cambiar contraseñas por defecto de Grafana e InfluxDB.
+   - Implementar HTTPS en Node-RED.
+   - Auditar acceso al broker MQTT.
 
-4. **Anlisis de rendimiento**
-   - Latencia MQTT: <3 segundos
-   - Prdida de paquetes: <1%
-   - Precisin GPS: <5 metros
+4. **Métricas de rendimiento objetivo:**
+   - Latencia MQTT: < 3 segundos.
+   - Pérdida de paquetes: < 1%.
+   - Precisión GPS: < 5 metros.
+
+[↑ Volver al índice](#tabla-de-contenidos)
 
 ---
 
-##  Instalación y Configuración Rápida
+## Instalación y Configuración Rápida
 
 ### Instalación del Firmware en Heltec
 
 ```bash
-# 1. Instalar Arduino IDE
-# 2. Agregar board manager URL: https://raw.githubusercontent.com/Heltec-Aaron-Lee/WiFi_Kit_series/master/package_heltec_esp32_index.json
-# 3. Instalar Heltec ESP32 board
-# 4. Seleccionar "Heltec WiFi LoRa 32 (V3)"
-# 5. Cargar código: Sketch  Upload
+# 1. Instalar Arduino IDE 2.0+
+# 2. Agregar URL del gestor de placas:
+#    https://raw.githubusercontent.com/Heltec-Aaron-Lee/WiFi_Kit_series/master/package_heltec_esp32_index.json
+# 3. Instalar "Heltec ESP32" desde el gestor de placas
+# 4. Seleccionar: Heltec WiFi LoRa 32 (V3)
+# 5. Cargar código: Sketch → Upload
 ```
 
-### Instalación del Servidor Local (Docker)
+### Instalación del Servidor Local (Docker Compose)
 
 ```bash
 # Crear carpeta de trabajo
 mkdir iot_women_safety && cd iot_women_safety
 
-# Docker Compose
+# Crear docker-compose.yml
 cat > docker-compose.yml << 'EOF'
 version: '3'
 services:
@@ -1084,32 +1062,25 @@ services:
       - "1883:1883"
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
-
 EOF
 
-# Levantar servicios
+# Levantar todos los servicios
 docker-compose up -d
 ```
 
-[ Volver al índice](#tabla-de-contenidos)
+[↑ Volver al índice](#tabla-de-contenidos)
 
 ---
 
+## Bibliografía
 
+[1] S. Monk, *Programming Arduino: Getting Started with Sketches*, 2nd ed. New York, NY: McGraw-Hill Education, 2016.
 
-[ Volver al índice](#tabla-de-contenidos)
+[2] R. Faludi, *Building Wireless Sensor Networks*, 1st ed. Sebastopol, CA: O'Reilly Media, 2010.
 
----
+[3] Telcel, "Especificaciones de red y configuración de APN para servicios GPRS en México," 2024. [En línea]. Disponible en: https://www.telcel.com/personas/servicios/telcel-internet/configuracion-internet
 
-##  Bibliografía
-
-[1] S. Monk, Programming Arduino: Getting Started with Sketches, 2nd ed. New York, NY: McGraw-Hill Education, 2016.
-
-[2] R. Faludi, Building Wireless Sensor Networks, 1st ed. Sebastopol, CA: O'Reilly Media, 2010.
-
-[3] Telcel, "Especificaciones de red y configuracin de APN para servicios GPRS en Mxico," 2024. [En línea]. Disponible en: https://www.telcel.com/personas/servicios/telcel-internet/configuracion-internet
-
-[4] HiveMQ, "MQTT Essentials  A Lightweight IoT Protocol," 2023. [En línea]. Disponible en: https://www.hivemq.com/blog/mqtt-essentials/
+[4] HiveMQ, "MQTT Essentials — A Lightweight IoT Protocol," 2023. [En línea]. Disponible en: https://www.hivemq.com/blog/mqtt-essentials/
 
 [5] Grafana Labs, "InfluxDB data source documentation," 2024. [En línea]. Disponible en: https://grafana.com/docs/grafana/latest/datasources/influxdb/
 
@@ -1117,22 +1088,23 @@ docker-compose up -d
 
 [7] Node-RED, "Node-RED documentation," 2024. [En línea]. Disponible en: https://nodered.org/docs/
 
-[8] Espressif Systemás, ESP32 Technical Reference Manual, 2023. [En línea]. Disponible en: https://www.espressif.com
+[8] Espressif Systems, *ESP32 Technical Reference Manual*, 2023. [En línea]. Disponible en: https://www.espressif.com
 
 [9] Semtech Corporation, "LoRa Modulation Basics," 2022. [En línea]. Disponible en: https://www.semtech.com/lora
 
-[10] Maxim Integrated, "MAX30102 Pulse Oximeter and Heart-Rate Sensor Datasheet," 2021. [En línea]. Disponible en: https://www.analog.com
+[10] Maxim Integrated / Analog Devices, "MAX30102 Pulse Oximeter and Heart-Rate Sensor Datasheet," 2021. [En línea]. Disponible en: https://www.analog.com/media/en/technical-documentation/data-sheets/MAX30102.pdf
 
-[11] InvenSense, "MPU-6050 Six-Axis Gyro and Accelerometer Datasheet," 2013. [En línea]. Disponible en: https://www.invensense.com
+[11] InvenSense / TDK, "MPU-6050 Six-Axis Gyro and Accelerometer Datasheet," 2013. [En línea]. Disponible en: https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf
 
-[12] IEEE, "IEEE 11073-10406: Standard for Personal Health Device Communication - Device Specialization Pulse Oximeter," 2020. [En línea].
+[12] IEEE, "IEEE 11073-10406: Standard for Personal Health Device Communication — Device Specialization Pulse Oximeter," 2020. [En línea].
 
 [13] LoRa Alliance, "LoRaWAN Specification v1.1," 2020. [En línea]. Disponible en: https://lora-alliance.org/
 
 [14] MQTT.org, "MQTT Version 3.1.1," 2014. [En línea]. Disponible en: https://mqtt.org/mqtt-specification
 
-[ Volver al índice](#tabla-de-contenidos)
+[↑ Volver al índice](#tabla-de-contenidos)
 
 ---
 
-**Proyecto Integrador - Tecnologías Inalámbricas**
+**Proyecto Integrador — Tecnologías Inalámbricas**  
+Instituto Tecnológico Superior del Occidente del Estado de Hidalgo • 6° "B" • 2026
