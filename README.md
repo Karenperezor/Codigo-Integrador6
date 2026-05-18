@@ -384,16 +384,6 @@ Pulsera Inteligente → LoRa → Receptor → GPRS/MQTT → HiveMQ → Node-RED 
 ```
 
 [ Volver al índice](#tabla-de-contenidos)
-
-### Flujo General de la Comunicación
-
-```text
-Pulsera Inteligente → LoRa → Nodo Receptor → GPRS/MQTT → HiveMQ → Node-RED / Grafana / InfluxDB → Alertas
-```
-
-[ Volver al índice](#tabla-de-contenidos)
-![Diagrama](diagrama-IOT.png)
-
 ---
 
 
