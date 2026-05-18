@@ -120,7 +120,7 @@ Diseñar y construir un **prototipo IoT funcional basado en Heltec ESP32 LoRa v3
 - Aceleración en tres ejes (X, Y, Z)
 - Ubicación GPS de la usuaria
 
-Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante una **ventana de una hora activada por una sola pulsación del botón de pánico**, aplicando los estándares de comunicación inalámbrica para garantizar **calidad, confiabilidad y seguridad** de los datos.
+Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante una **ventana de una hora activada por una sola pulsación del botón de pánico**, aplicando los estándares de comunicación inalámbrica para garantizar **calidad, confiabilidad y seguridad** de los datos.
 
 ### Objetivos Específicos
 
