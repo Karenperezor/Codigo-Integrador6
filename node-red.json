@@ -1,0 +1,772 @@
+[
+    {
+        "id": "bf3766469e0bad75",
+        "type": "tab",
+        "label": "Flow 9",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7a7352c47b379223",
+        "type": "inject",
+        "z": "bf3766469e0bad75",
+        "d": true,
+        "name": "tiempo ↺",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "2",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 260,
+        "wires": [
+            [
+                "5fda8b4ea4c9826b"
+            ]
+        ]
+    },
+    {
+        "id": "024d1586539b8da7",
+        "type": "inject",
+        "z": "bf3766469e0bad75",
+        "d": true,
+        "name": "Simular PANICO + CAIDA",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "{\"tipo\":\"PANICO\",\"acel\":4.72,\"bpm\":155,\"lat\":20.227491,\"lon\":-99.228149}",
+        "payloadType": "json",
+        "x": 240,
+        "y": 340,
+        "wires": [
+            [
+                "5fda8b4ea4c9826b"
+            ]
+        ]
+    },
+    {
+        "id": "5e8222e414c46bac",
+        "type": "inject",
+        "z": "bf3766469e0bad75",
+        "d": true,
+        "name": "Simular FORCEJEO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "{\"tipo\":\"PANICO\",\"acel\":2.97,\"bpm\":128,\"lat\":20.227491,\"lon\":-99.228149}",
+        "payloadType": "json",
+        "x": 240,
+        "y": 420,
+        "wires": [
+            [
+                "5fda8b4ea4c9826b"
+            ]
+        ]
+    },
+    {
+        "id": "45e2afaeac911238",
+        "type": "inject",
+        "z": "bf3766469e0bad75",
+        "d": true,
+        "name": "Simular BPM ALTO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "{\"tipo\":\"NORMAL\",\"acel\":1.01,\"bpm\":145,\"lat\":20.227491,\"lon\":-99.228149}",
+        "payloadType": "json",
+        "x": 220,
+        "y": 520,
+        "wires": [
+            [
+                "5fda8b4ea4c9826b"
+            ]
+        ]
+    },
+    {
+        "id": "5fda8b4ea4c9826b",
+        "type": "function",
+        "z": "bf3766469e0bad75",
+        "name": "Procesar Datos",
+        "func": "var d = msg.payload;\n\n// 1. Asegurar que los datos sean números para InfluxDB\nvar bpm_num = parseInt(d.bpm || d.BPM || 0);\n// Agregamos más variantes comunes para el nombre del sensor\nvar spo2_num = parseInt(d.spo2 || d.SPO2 || d.SpO2 || d.oxigeno || 0);\n//var spo2_num = parseInt(d.spo2 || d.SPO2 || 0); // <-- Nueva variable para Oxígeno\nvar acel_num = parseFloat(d.acel || d.AccX || 0);\nvar lat_num = parseFloat(d.lat || d.Lat || 0);\nvar lon_num = parseFloat(d.lon || d.Lon || 0);\n\n// 2. Mantener variables originales para tu Dashboard\nd.ax = d.AccX || 0;\nd.ay = d.AccY || 0;\nd.az = d.AccZ || 0;\nd.bpm = bpm_num;\nd.spo2 = spo2_num; // <-- Aseguramos que el Dashboard también lo tenga\nd.acel = acel_num;\nd.latitud = lat_num;\nd.longitud = lon_num;\nd.hora = new Date().toLocaleTimeString();\n\n// 3. Lógica de alertas\nif (d.SOS === 1 || d.tipo === \"PANICO\" || acel_num > 2.5) {\n    d.estadoSistema = 'PANICO';\n    d.eventoMovimiento = (acel_num > 2.5) ? 'CAIDA/FORCEJEO' : 'BOTON PANICO';\n} else {\n    d.estadoSistema = 'NORMAL';\n    d.eventoMovimiento = 'REPOSO';\n}\n\n// 4. Formatos de salida\nvar msgDashboard = { payload: d };\n\nvar msgInflux = {\n    payload: {\n        bpm: bpm_num,\n        spo2: spo2_num, // <-- Se añade al objeto para InfluxDB\n        acel: acel_num,\n        lat: lat_num,\n        lon: lon_num\n    }\n};\n\nreturn [msgDashboard, msgInflux];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 380,
+        "wires": [
+            [
+                "94f25aa8c3194079"
+            ],
+            [
+                "191851c1b45e0105"
+            ]
+        ]
+    },
+    {
+        "id": "94f25aa8c3194079",
+        "type": "function",
+        "z": "bf3766469e0bad75",
+        "name": "Separar Salidas",
+        "func": "var d = msg.payload;\nvar msg1  = {payload: d.latitud};\nvar msg2  = {payload: d.longitud};\nvar msg3  = {payload: d.bpm};\nvar msg4  = {payload: d.estadoBPM};\nvar msg5  = {payload: d.ax, topic: 'Eje X'};\nvar msg6  = {payload: d.ay, topic: 'Eje Y'};\nvar msg7  = {payload: d.az, topic: 'Eje Z'};\nvar msg8  = {payload: d.acel};\nvar msg9  = {payload: d.estadoSistema + ' | ' + d.tipoMovimiento};\nvar msg10 = {payload: d.eventoMovimiento};\nvar msg11 = {payload: d.hora};\nvar msg12 = {payload: d.spo2};\nvar msg13 = {\n    payload: {\n        name: 'Julieta',\n        lat: d.latitud,\n        lon: d.longitud,\n        icon: d.estadoSistema === 'PANICO' ? 'fa-exclamation-triangle' : 'fa-user',\n        iconColor: d.estadoSistema === 'PANICO' ? 'red' : 'green',\n        label: 'Julieta',\n        popup: '<b>Julieta</b><br>Estado: ' + d.estadoSistema + '<br>BPM: ' + d.bpm + '<br>Acel: ' + d.acel + 'g<br>' + d.hora\n    }\n};\n\n\n\n\n// Reordenado para coincidir con tus nodos físicos en orden descendente\nreturn [msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8, msg9, msg10, msg11, msg12, msg13];",
+        "outputs": 13,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 360,
+        "wires": [
+            [
+                "f97b3ead7355d5d0"
+            ],
+            [
+                "1371592f8e984dbb"
+            ],
+            [
+                "63b77dc17b87dfca"
+            ],
+            [
+                "51bfdf587ff34328"
+            ],
+            [
+                "395df0b157ed1c3a"
+            ],
+            [
+                "6748c42ac4cdf140"
+            ],
+            [
+                "a3d85b238498d652"
+            ],
+            [
+                "3ebfa527a048054a",
+                "6391b5fbdf3d48dd"
+            ],
+            [],
+            [],
+            [
+                "238f22fb8659e388"
+            ],
+            [
+                "94435012ba4bf964"
+            ],
+            [
+                "5f207c0972096f74",
+                "affa808d222419d3"
+            ]
+        ]
+    },
+    {
+        "id": "5f207c0972096f74",
+        "type": "worldmap",
+        "z": "bf3766469e0bad75",
+        "name": "Mapa WorldMap Feed",
+        "lat": "20.2274",
+        "lon": "-99.2281",
+        "zoom": "15",
+        "layer": "EsriDG",
+        "cluster": "",
+        "maxage": "",
+        "usermenu": "show",
+        "layers": "show",
+        "panit": "true",
+        "panlock": "false",
+        "hiderightclick": "false",
+        "coords": "none",
+        "path": "/worldmap",
+        "overlist": "DR,CO,RA,DN",
+        "maplist": "OSMG,OSMC,EsriC,EsriS,EsriT,EsriDG,UKOS",
+        "mapname": "",
+        "mapurl": "",
+        "mapopt": "",
+        "mapwms": false,
+        "x": 1230,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "238f22fb8659e388",
+        "type": "ui_text",
+        "z": "bf3766469e0bad75",
+        "group": "grp_estado",
+        "order": 1,
+        "width": "6",
+        "height": "1",
+        "name": "Hora",
+        "label": "Hora:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1230,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "51bfdf587ff34328",
+        "type": "ui_text",
+        "z": "bf3766469e0bad75",
+        "d": true,
+        "group": "grp_estado",
+        "order": 3,
+        "width": "6",
+        "height": "1",
+        "name": "Evento",
+        "label": "Evento Detectado:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1250,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "f97b3ead7355d5d0",
+        "type": "ui_text",
+        "z": "bf3766469e0bad75",
+        "group": "grp_gps_info",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Latitud",
+        "label": "Latitud",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1230,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "1371592f8e984dbb",
+        "type": "ui_text",
+        "z": "bf3766469e0bad75",
+        "group": "grp_gps_info",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Longitud",
+        "label": "Longitud",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 1230,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "63b77dc17b87dfca",
+        "type": "ui_gauge",
+        "z": "bf3766469e0bad75",
+        "group": "grp_cardiaco",
+        "order": 1,
+        "width": "3",
+        "height": "3",
+        "gtype": "gage",
+        "title": "BPM",
+        "label": "lpm",
+        "format": "{{value}}",
+        "min": 0,
+        "max": 200,
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "60",
+        "seg2": "100",
+        "diff": false,
+        "x": 1230,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "94435012ba4bf964",
+        "type": "ui_gauge",
+        "z": "bf3766469e0bad75",
+        "group": "grp_cardiaco",
+        "order": 3,
+        "width": "3",
+        "height": "3",
+        "gtype": "gage",
+        "title": "SpO2",
+        "label": "%",
+        "format": "{{value}}%",
+        "min": 85,
+        "max": 100,
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "90",
+        "seg2": "95",
+        "diff": false,
+        "x": 1230,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "3ebfa527a048054a",
+        "type": "ui_gauge",
+        "z": "bf3766469e0bad75",
+        "group": "grp_aceleracion",
+        "order": 1,
+        "width": "3",
+        "height": "4",
+        "gtype": "wave",
+        "title": "Magnitud G",
+        "label": "g",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "6",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "1.2",
+        "seg2": "2.5",
+        "diff": false,
+        "x": 1230,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "6391b5fbdf3d48dd",
+        "type": "ui_chart",
+        "z": "bf3766469e0bad75",
+        "group": "grp_aceleracion",
+        "order": 2,
+        "width": "9",
+        "height": "5",
+        "label": "Historial Aceleracion (g)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Esperando datos...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "6",
+        "removeOlder": "1",
+        "removeOlderPoints": "60",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#db33cd"
+        ],
+        "outputs": 1,
+        "x": 1270,
+        "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "395df0b157ed1c3a",
+        "type": "ui_chart",
+        "z": "bf3766469e0bad75",
+        "group": "grp_ejes",
+        "order": 1,
+        "width": "4",
+        "height": "5",
+        "label": "Eje X (g)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Esperando datos...",
+        "dot": false,
+        "ymin": "-6",
+        "ymax": "6",
+        "removeOlder": "1",
+        "removeOlderPoints": "60",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#e74c3c"
+        ],
+        "outputs": 1,
+        "x": 1230,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6748c42ac4cdf140",
+        "type": "ui_chart",
+        "z": "bf3766469e0bad75",
+        "group": "grp_ejes",
+        "order": 2,
+        "width": "4",
+        "height": "5",
+        "label": "Eje Y (g)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Esperando datos...",
+        "dot": false,
+        "ymin": "-6",
+        "ymax": "6",
+        "removeOlder": "1",
+        "removeOlderPoints": "60",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#2ecc71"
+        ],
+        "outputs": 1,
+        "x": 1230,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a3d85b238498d652",
+        "type": "ui_chart",
+        "z": "bf3766469e0bad75",
+        "group": "grp_ejes",
+        "order": 3,
+        "width": "4",
+        "height": "5",
+        "label": "Eje Z (g)",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Esperando datos...",
+        "dot": false,
+        "ymin": "-6",
+        "ymax": "6",
+        "removeOlder": "1",
+        "removeOlderPoints": "60",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#f39c12"
+        ],
+        "outputs": 1,
+        "x": 1230,
+        "y": 840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "affa808d222419d3",
+        "type": "ui_template",
+        "z": "bf3766469e0bad75",
+        "group": "grp_gps_mapa",
+        "name": "Mapa WorldMap",
+        "order": 1,
+        "width": "12",
+        "height": "12",
+        "format": "<iframe src=\"/worldmap\" style=\"width:100%;height:500px;border:none;border-radius:6px;\"></iframe>",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "x": 1230,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "01a231e563a3c78e",
+        "type": "mqtt in",
+        "z": "bf3766469e0bad75",
+        "name": "",
+        "topic": "instituto/mujer/alertas",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "e8a1d656b39ecd0d",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 570,
+        "y": 580,
+        "wires": [
+            [
+                "5fda8b4ea4c9826b",
+                "wa_cooldown"
+            ]
+        ]
+    },
+    {
+        "id": "191851c1b45e0105",
+        "type": "influxdb out",
+        "z": "bf3766469e0bad75",
+        "influxdb": "33f7237045f72a6f",
+        "name": "influxdb-local",
+        "measurement": "datos_pulsera",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "Instancia_Mujer",
+        "bucket": "Pulsera_Monitoreo",
+        "x": 760,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "wa_cooldown",
+        "type": "delay",
+        "z": "bf3766469e0bad75",
+        "name": "Esperar 60s entre alertas",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "60",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 740,
+        "wires": [
+            [
+                "wa_armar_mensaje"
+            ]
+        ]
+    },
+    {
+        "id": "wa_armar_mensaje",
+        "type": "function",
+        "z": "bf3766469e0bad75",
+        "name": "Armar Mensaje WhatsApp",
+        "func": "var d = msg.payload;\n\nif (typeof d === 'string') {\n    try { d = JSON.parse(d); } catch(e) { d = {}; }\n}\n\nvar bpm = d.bpm || d.BPM || '--';\nvar lat = d.lat || d.Lat || '--';\nvar lon = d.lon || d.Lon || '--';\nvar hora = new Date().toLocaleTimeString('es-MX');\n\nvar estadoBpm = '';\nif (bpm !== '--') {\n    if (bpm > 140) estadoBpm = ' (muy elevado, posible pánico o esfuerzo extremo)';\n    else if (bpm > 100) estadoBpm = ' (elevado)';\n    else estadoBpm = ' (normal)';\n}\n\nvar ubicacion = (lat !== '--' && lon !== '--')\n    ? 'https://maps.google.com/?q=' + lat + ',' + lon\n    : 'No disponible aún';\n\nvar texto = '🚨 ALERTA DE EMERGENCIA 🚨\\n\\n';\ntexto += '⚠️ La pulsera de Julieta se acaba de activar.\\n';\ntexto += 'Esto significa que puede estar en peligro.\\n\\n';\ntexto += '🕐 Hora: ' + hora + '\\n';\nif (bpm !== '--') texto += '❤️ Ritmo cardiaco: ' + bpm + ' latidos/min' + estadoBpm + '\\n';\ntexto += '📍 Última ubicación conocida:\\n' + ubicacion + '\\n\\n';\ntexto += 'Por favor comunícate con ella o llama al 911.';\n\n\n\nvar apikey  = '3414452';\nvar baseUrl = 'https://api.callmebot.com/whatsapp.php?text=' + encodeURIComponent(texto);\n\n// ── Agrega o quita contactos aquí ──────────────────────────────\nvar contactos = [\n    { telefono: '5217721415937', apikey: '3414452' }, // Contacto 1 (original)\n    { telefono: '521771XXXXXXX', apikey: 'XXXXXX'  }, // Contacto 2\n    { telefono: '521771YYYYYYY', apikey: 'YYYYYY'  }, // Contacto 3\n];\n// ───────────────────────────────────────────────────────────────\n\nvar mensajes = contactos.map(function(c) {\n    return {\n        url:    baseUrl + '&phone=' + c.telefono + '&apikey=' + c.apikey,\n        method: 'GET',\n        payload: msg.payload\n    };\n});\n\nreturn mensajes; // Node-RED envía uno por salida",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 820,
+        "wires": [
+            [
+                "wa_http_request"
+            ]
+        ]
+    },
+    {
+        "id": "wa_http_request",
+        "type": "http request",
+        "z": "bf3766469e0bad75",
+        "name": "Enviar WhatsApp CallMeBot",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1120,
+        "y": 880,
+        "wires": [
+            [
+                "wa_debug"
+            ]
+        ]
+    },
+    {
+        "id": "wa_debug",
+        "type": "debug",
+        "z": "bf3766469e0bad75",
+        "name": "Respuesta WhatsApp",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1440,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "grp_estado",
+        "type": "ui_group",
+        "name": "Estado General",
+        "tab": "ui_tab_julieta",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "grp_gps_info",
+        "type": "ui_group",
+        "name": "GPS - Coordenadas",
+        "tab": "ui_tab_julieta",
+        "order": 4,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "grp_cardiaco",
+        "type": "ui_group",
+        "name": "Ritmo Cardiaco",
+        "tab": "ui_tab_julieta",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "grp_aceleracion",
+        "type": "ui_group",
+        "name": "Aceleracion Total (MPU6050)",
+        "tab": "ui_tab_julieta",
+        "order": 4,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "grp_ejes",
+        "type": "ui_group",
+        "name": "Ejes X  Y  Z",
+        "tab": "ui_tab_julieta",
+        "order": 5,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "grp_gps_mapa",
+        "type": "ui_group",
+        "name": "GPS - Mapa",
+        "tab": "ui_tab_julieta",
+        "order": 3,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "e8a1d656b39ecd0d",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "33f7237045f72a6f",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": 8086,
+        "protocol": "http",
+        "database": "database",
+        "name": "DB",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "timeout": 10,
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "ui_tab_julieta",
+        "type": "ui_tab",
+        "name": "Julieta",
+        "icon": "person",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "6be403d062db645d",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-web-worldmap": "5.6.1",
+            "node-red-dashboard": "3.6.6",
+            "node-red-contrib-influxdb": "0.7.0"
+        }
+    }
+]
