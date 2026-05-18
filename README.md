@@ -69,7 +69,7 @@ Este proyecto implementa un **sistema IoT funcional basado en tecnologías inal�
 
 [ Volver al índice](#tabla-de-contenidos)
 
-### Contexto del Problema
+### Plantemiento del Problema
 
 El proyecto aborda directamente la problemática de la **violencia de género en el municipio de Tlahuelilpan, Hidalgo**, donde el **70.1% de las mujeres de 15 años o más han experimentado al menos un incidente de violencia** según datos del INEGI. Esta solución se alinea con el **eje de Seguridad Humana de los PRONACES** (Programas Nacionales Estratégicos).
 
@@ -90,7 +90,7 @@ A diferencia de otras soluciones de monitoreo continuo, este prototipo incorpora
 
 ## Justificación
 
-### Por qué este proyecto es necesario
+### ¿Por qué este proyecto es necesario?
 
 1. **Violencia de Género**: La violencia contra las mujeres es un problema crítico en México que requiere soluciones tecnológicas accesibles y confiables.
 
@@ -119,7 +119,7 @@ Diseñar y construir un **prototipo IoT funcional basado en Heltec ESP32 LoRa v3
 - Aceleración en tres ejes (X, Y, Z)
 - Ubicación GPS de la usuaria
 
-Transmitiendo los datos vía **LoRa y GPRS** al Instituto de la Mujer durante una **ventana de una hora activada por una sola pulsación del botón de pánico**, aplicando los estándares de comunicación inalámbrica para garantizar **calidad, confiabilidad y seguridad** de los datos.
+Transmitiendo los datos vía **LoRa y GPRS** al Instancia Gubernamental durante una **ventana de una hora activada por una sola pulsación del botón de pánico**, aplicando los estándares de comunicación inalámbrica para garantizar **calidad, confiabilidad y seguridad** de los datos.
 
 ### Objetivos Específicos
 
