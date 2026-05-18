@@ -23,7 +23,7 @@
 - [Tabla de Direccionamiento I2C](#tabla-de-direccionamiento-i2c)
 - [Formato de Datos de Salida](#formato-de-datos-de-salida)
 - [Códigos del Proyecto](#códigos-del-proyecto)
-  - [Nodo Emisor - Version1-TRANSMISOR.ino](#nodo-emisor-pulsera---heltec-esp32-lora-v3)
+  - [Nodo Emisor - Version1-TRANSMISOR.ino](#https://github.com/Karenperezor/Codigo-Integrador6/blob/main/Version1-TRANSMISOR.ino)
   - [Nodo Receptor - receptor_Hv2.ino](#nodo-receptor-heltec-esp32-lora-v3)
   - [Gateway Celular - lilygo.ino](#gateway-celular-lilygo-t-sim7000)
 - [Flujo de Datos Completo](#flujo-de-datos-completo)
@@ -1614,7 +1614,7 @@ docker run -d -p 1880:1880 nodered/node-red
    - Botón de pánico NO es especialmente visible (discreción)
    - Datos históricos almacenados solo 30 días (configurable)
    - Transmisión se detiene automáticamente después de 1 hora
-   
+
 4. **Situaciones de emergencia**
    - Probar dispositivo regularmente (1x por semana)
    - Tener número de emergencia guardado en teléfono
