@@ -356,6 +356,8 @@ Transmitiendo los datos vía **LoRa y GPRS** a la Instancia Gubernamental durant
 
 ### Topología de Red
 
+![Diagrama](diagrama-IOT.png)
+
 ```
 Pulsera Inteligente → LoRa 915 MHz → Nodo Receptor → ESP-NOW → Gateway LilyGO → GPRS/MQTT → HiveMQ → Node-RED / Grafana / InfluxDB
 ```
