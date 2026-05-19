@@ -310,6 +310,8 @@ Transmitiendo los datos vía **LoRa y GPRS** a la Instancia Gubernamental durant
 
 ### Nodo Receptor (Heltec ESP32 LoRa v2)
 
+![Tabla de conexiones](version2.jpeg)
+
 #### Display OLED SSD1306 (I2C)
 
 | Pin OLED | Pin Heltec ESP32 |
